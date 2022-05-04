@@ -1,0 +1,51 @@
+[
+    {
+     "image": "images/flaredJeans.jpg",
+     "category":"top_wear",
+     "sub_category":"t-shirt",
+     "target_group":"male",
+     "title": "flared jeans",
+     "description": "Flared denim jeans",
+     "price": "9,99$",
+     "variants" : [
+         {
+             "size":28,
+             "color": "blue",
+             "available_units" : 20
+        },
+         {
+             "size":30,
+             "color": "blue",
+             "available_units" : 22
+        },
+         {
+             "size":30,
+             "color": "red",
+             "available_units" : 12
+        }
+     ]
+  },
+  {
+     "image": "images/blueDress.jpg",
+     "category":"party wear",
+     "sub_category":"dress",
+     "target_group":"Female",
+     "title": "One Piece Dress",
+     "description": "Blue Dress with full sleeves",
+     "price": "9,99$",
+     "variants" : {
+         "blue_small" : {
+             "img" : "blue_small_dress_img",
+             "available_units" : 20
+         },
+         "red_small" : {
+             "img" : "red_small_dress_img",
+             "available_units" : 12
+         },
+             "red_medium" : {
+                 "img" : "red_medium_dress_img",
+                 "available_units" : 11
+             }
+         }
+  }
+]

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/formStyle.css" />
+    <script src="./bundle.js" defer></script>
+    <title>Register</title>
+  </head>
+  <body>
+    <h1>Register Page</h1>
+    <form id="signUpForm">
+      <div class="container">
+        <label for="username"><b>Username *</b></label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Enter your Username"
+          required
+        />
+        <label for="email"><b>Email *</b></label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Enter your Email"
+          required
+        />
+        <label for="password"><b>Password *</b></label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Enter your Password"
+          required
+        />
+        <label for="confirmPassword"><b>Confirm Password *</b></label>
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          placeholder="Confirm your Password"
+          required
+        />
+        <button type="submit">Register</button>
+      </div>
+    </form>
+    <button id="openLoginBtn">Already have an account. (LOGIN)</button>
+    <button id="backToHomeBtn">Go Back To Home</button>
+  </body>
+</html>
