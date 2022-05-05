@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>LOGIN PAGE</title>
+</head>
+<body>
+    <span class="successfull-login"></span>
+    <div class="main">
+        <h1>LOG IN</h1>
+        <form class="loginForm"> 
+
+            <input type="email"
+                   name="email" 
+                   id="login-email" 
+                   placeholder="Email" 
+                  
+            />
+            
+            <input type="password" 
+                   name="password"
+                   id="login-password" 
+                    placeholder="Password" 
+                  
+            />
+            <button id="redirect_forgot" onclick="window.location.href='./forgotPassword.html'">FORGOT PASSWORD</button>
+            <button type="submit" id="loginSubmit" > log in </button>
+            <br>
+            <br>
+            <span class="login-error"></span> 
+        </form>  
+
+    </div>
+
+    <script src="./bundle.js"></script>
+
+</body>
+
+</html>

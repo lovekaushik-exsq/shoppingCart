@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color:whitesmoke;
+            display: grid;
+            place-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+        .main{
+            width:600px;
+            max-width: 90%;
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .main > h1 {
+            font-size: 30px;
+            color: rgb(26,25, 25);
+            margin: 0 0 30px 0;
+        
+        }
+        .main  >button{
+            background-color: orange;
+            padding: 15px;
+            width: 40%;
+            border: none;
+            color: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>WELCOME</h1>
+        
+        <button id="submit" onclick="window.location.href='./login.html'">LOGOUT</button>
+            
+
+    </div>      
+</body>
+</html>

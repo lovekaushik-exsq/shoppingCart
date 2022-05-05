@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color:whitesmoke;
+            display: grid;
+            place-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+        .todo-error{
+            color: red;
+            background-color: rgb(244, 162, 162);
+            font-size:large;
+            font: bold;
+            text-align: left;
+            
+        
+        }
+        .remove{
+        text-align: right;
+        place-content: right;
+        padding-left: 20px;
+        padding-right: 10px;
+        border-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="todoApp">
+        <ul id="box"></ul>
+        <input type="text" id="name"/>
+        <input type="button" value="Add" id="clickBtn"  /><br><br>
+        
+
+        <span class="todo-error"></span>
+    </div>
+    <script src="./todoApp.js"></script>
+</body>
+</html>
