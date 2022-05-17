@@ -36,12 +36,12 @@ const loadFilter = async () => {
         <form>
             <div>Colors</div>
             ${data.colors.map((color: string, i: number) => (`
-            <input type="checkbox" id="${i}" name="color" value="${color}"
+            <input type="checkbox" id="${i}" name="color" value="${color}" autocomplete="on"/>
             <label for="${i}">${color}</label><br>
             `)).join("")}
             <div>Size</div>
             ${data.size.map((size: string, i: number) => (`
-            <input type="checkbox" id="${i}" name="size" value="${size}"
+            <input type="checkbox" id="${i}" name="size" value="${size}" autocomplete="on"/>
             <label for="${i}">${size}</label><br>
             `)).join("")}
             <button id="filterBtn" type="submit">Filter</button>
@@ -63,3 +63,4 @@ const keepFilter = async () => {
         await filter();
     }
 }
+

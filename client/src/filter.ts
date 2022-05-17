@@ -33,6 +33,7 @@ export const filterProducts = async () => {
     }
     let colors: string[] = localStorage.getItem('filterColors')!.split(",");
     let size: string[] = localStorage.getItem('filterSize')!.split(",");
+    checkTheCheckBox(colors, size);
     const param = {
         colors,
         size,
@@ -70,4 +71,22 @@ const getSelectedSize = () => {
             checkedSize.push(checkbox.value);
     }
     localStorage.setItem("filterSize", checkedSize.join(","));
+}
+
+
+const checkTheCheckBox = (colors: string[], size: string[]) => {
+    document.querySelectorAll('[name="color"]').forEach(box => {
+        colors.forEach(color => {
+            if ((box as HTMLInputElement).value == color) {
+                (box as HTMLInputElement).checked = true;
+            }
+        })
+    });
+    document.querySelectorAll('[name="size"]').forEach(box => {
+        size.forEach(s => {
+            if ((box as HTMLInputElement).value == s) {
+                (box as HTMLInputElement).checked = true;
+            }
+        })
+    });
 }
