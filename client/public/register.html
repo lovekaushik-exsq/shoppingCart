@@ -5,22 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/formStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
     <script src="./bundle.js" defer></script>
     <title>Register</title>
   </head>
-  <body>
+  <body id="registerPage">
     <h1>Register Page</h1>
+    <span id="msg"></span>
     <form id="signUpForm">
       <div class="container">
-        <label for="username"><b>Username *</b></label>
+        <label for="username"><b>User Name *</b></label>
         <input
           type="text"
-          name="username"
-          id="username"
+          name="user_name"
+          id="user_name"
           placeholder="Enter your Username"
           required
         />
-        <label for="email"><b>Email *</b></label>
+        <label for="email"><b>User Email *</b></label>
         <input
           type="email"
           name="email"
@@ -28,26 +33,75 @@
           placeholder="Enter your Email"
           required
         />
-        <label for="password"><b>Password *</b></label>
+        <p class="pass">
+          <label for="password"><b>User Password *</b></label>
+          <button style="all: unset" class="togglePassword">
+            <i class="bi bi-eye-slash" id="icon"></i>
+          </button>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Enter your Password"
+            required
+          />
+        </p>
+        <p class="pass">
+          <label for="confirmPassword"><b>Confirm Password *</b></label>
+          <button style="all: unset" class="togglePassword">
+            <i class="bi bi-eye-slash" id="icon"></i>
+          </button>
+          <input
+            type="password"
+            name="password"
+            id="confirmPassword"
+            placeholder="Confirm your Password"
+            required
+          />
+        </p>
+        <label for="phoneNumber"><b>User Phone Number *</b></label>
         <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Enter your Password"
+          type="text"
+          name="phoneNumber"
+          id="phoneNumber"
+          placeholder="Enter your phone number:- "
           required
         />
-        <label for="confirmPassword"><b>Confirm Password *</b></label>
+        <label for="address"><b>Address</b></label>
         <input
-          type="password"
-          name="confirmPassword"
-          id="confirmPassword"
-          placeholder="Confirm your Password"
+          type="text"
+          name="address"
+          id="address"
+          placeholder="Address"
           required
         />
-        <button type="submit">Register</button>
+        <label for="zipcode"><b>Zip-Code</b></label>
+        <input
+          type="number"
+          name="zipCode"
+          id="zipCode"
+          placeholder="Zip-Code"
+          required
+        />
+        <div id="countryArea"></div>
+        <div id="stateArea">
+          <label for="state"><b>State: </b></label>
+          <select name="state" id="state" disabled>
+            <option default disabled selected value>
+              -- select your state --
+            </option>
+          </select>
+        </div>
+        <div id="cityArea">
+          <label for="city"><b>City: </b></label>
+          <select name="city" id="city" disabled>
+            <option default disabled selected value>
+              -- select your city --
+            </option>
+          </select>
+        </div>
+        <button type="submit" id="submitRegister">Register</button>
       </div>
     </form>
-    <button id="openLoginBtn">Already have an account. (LOGIN)</button>
-    <button id="backToHomeBtn">Go Back To Home</button>
   </body>
 </html>

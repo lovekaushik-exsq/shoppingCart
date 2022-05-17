@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 const auth = require('./routes/auth');
 const products = require("./routes/products");
 const order = require("./routes/cartAndOrder");
+const address = require("./routes/address");
 
 const app: Application = express();
 dotenv.config();
@@ -21,8 +22,9 @@ app.get("/", (req, res) => {
 app.use('/auth', auth);
 app.use('/products', products);
 app.use('/order', order);
+app.use('/address', address)
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(5000, () => {
     console.log("Server listening on Port");
     connection.connect(function (err: Error) {
         if (err) throw err;

@@ -4,13 +4,55 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./styles/card.css" />
+    <link rel="stylesheet" href="./styles/navbar.css" />
     <script src="./bundle.js" defer></script>
     <title>Shopping Site</title>
   </head>
-  <body id="mainPage">
-    <h1>Shopping Site</h1>
-    <button id="openLoginBtn">Login</button>
-    <button id="openRegisterBtn">Register</button>
-    <p id="showHere"></p>
+  <body id="homePage">
+    <div class="topnav">
+      <a class="tile active" href="index.html">Home</a>
+      <a class="tile" href="index.html?type=men">Men</a>
+      <a class="tile" href="index.html?type=women">Women</a>
+      <a class="tile" href="index.html?type=kids">Kids</a>
+      <a class="tile" id="openCart" href="#">Cart</a>
+      <a id="openLoginBtn" href="login.html" style="float: right">Login</a>
+      <a id="logout" href="index.html" style="float: right">Logout</a>
+      <div class="search-container">
+        <form>
+          <input
+            type="text"
+            placeholder="Search.."
+            name="search"
+            id="searchBar"
+          />
+          <button id="searchBtn" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
+        <button id="clearSearch">Clear Search</button>
+      </div>
+    </div>
+    <button id="openFilter">
+      <i class="fa fa-filter"></i>
+    </button>
+    <button id="clearFilter">Clear Filter</button>
+    <div id="filterArea" style="display: none"></div>
+    <div class="row" id="products"></div>
   </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"
+  ></script>
 </html>

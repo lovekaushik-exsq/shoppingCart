@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="./styles/formStyle.css" />
     <title>Login</title>
   </head>
-  <body>
+  <body id="loginPage">
     <h1>Login Page</h1>
+    <span id="msg"></span>
     <form id="loginForm">
       <div class="container">
         <label for="email"><b>Email</b></label>
@@ -18,7 +19,6 @@
           name="email"
           id="email"
           placeholder="Enter you email"
-          required
         />
         <label for="password"><b>Password</b></label>
         <input
@@ -26,12 +26,10 @@
           name="password"
           id="password"
           placeholder="Enter your Password"
-          required
         />
-        <button type="submit">Login</button>
+        <button id="submitLogin" type="submit">Login</button>
       </div>
     </form>
     <button id="openRegisterBtn">Don't have an account? (REGISTER HERE)</button>
-    <button id="backToHomeBtn">Go Back To Home</button>
   </body>
 </html>
