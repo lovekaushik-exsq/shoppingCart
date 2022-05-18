@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Router } from "express";
 import { getAllCountries, getStatesFor, getCitiesFor, getAllAddressOfUser, addNewAddress } from "../controllers/address";
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get('/getAllCountries', getAllCountries);
-router.post('/getStatesFor', getStatesFor);
-router.post('/getCitiesFor', getCitiesFor);
-router.post('/getAllAddressOfUser', getAllAddressOfUser);
+router.get('/getStatesFor', getStatesFor);
+router.get('/getCitiesFor', getCitiesFor);
+router.get('/getAllAddressOfUser', getAllAddressOfUser);
 router.post('/addNewAddress', addNewAddress);
 
-module.exports = router;
+export default router;

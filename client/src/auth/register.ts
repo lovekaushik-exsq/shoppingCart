@@ -1,18 +1,19 @@
 import * as api from "../api/index";
 import { userRegistration } from "../types";
 import { getMessage, setMessage } from "../utilities/messages";
-import { emptyField, passwordValidate, validEmail, validPhoneNumber } from "../utilities/validation";
+import { emptyField, passwordValidate, togglePassword, validEmail, validPhoneNumber } from "../utilities/validation";
 
 export const loadRegister = () => {
-    document.querySelectorAll('.pass').forEach(toggle => {
-        toggle.querySelector('.togglePassword')!.addEventListener('click', (e: Event) => {
-            e.preventDefault();
-            const visibility = toggle!.querySelector('input');
-            const type = visibility!.getAttribute("type") === "password" ? "text" : "password";
-            visibility!.setAttribute("type", type);
-            toggle.querySelector('#icon')?.classList.toggle("bi-eye");
-        })
-    })
+    // document.querySelectorAll('.pass').forEach(toggle => {
+    //     toggle.querySelector('.togglePassword')!.addEventListener('click', (e: Event) => {
+    //         e.preventDefault();
+    //         const visibility = toggle!.querySelector('input');
+    //         const type = visibility!.getAttribute("type") === "password" ? "text" : "password";
+    //         visibility!.setAttribute("type", type);
+    //         toggle.querySelector('#icon')?.classList.toggle("bi-eye");
+    //     })
+    // })
+    togglePassword();
     const user = localStorage.getItem('profile');
     if (user) {
         window.location.href = 'index.html';
@@ -34,7 +35,6 @@ export const validateRegister = (e: Event) => {
         user_name,
         user_email,
         user_password,
-        confirmPassword,
         user_phone_number,
         address,
         zip_code,
@@ -42,8 +42,15 @@ export const validateRegister = (e: Event) => {
         state,
         city
     } as userRegistration;
+    const fields = {
+        user_name,
+        user_email,
+        user_password,
+        confirmPassword,
+        user_phone_number
+    }
     e.preventDefault();
-    if (emptyField(user) || checkValidation(user)) {
+    if (emptyField(fields) || checkValidation(fields)) {
         document.getElementById('msg')!.innerHTML = getMessage();
         return;
     }
@@ -80,7 +87,7 @@ export const showCountry = async () => {
 
 const showState = async (country_id: number) => {
     const stateArea = document.getElementById('stateArea')!;
-    const { data } = await api.getStatesFor({ country_id });
+    const { data } = await api.getStatesFor(country_id);
     stateArea.innerHTML = (`
         <label for="state"><b>Choose a country: </b></label>
         <select name="state" id="state">
@@ -98,7 +105,7 @@ const showState = async (country_id: number) => {
 
 const showCity = async (state_id: number) => {
     const cityArea = document.getElementById('cityArea')!;
-    const { data } = await api.getCitiesFor({ state_id });
+    const { data } = await api.getCitiesFor(state_id);
     cityArea.innerHTML = (`
         <label for="city"><b>Choose a city: </b></label>
         <select name="city" id="city">

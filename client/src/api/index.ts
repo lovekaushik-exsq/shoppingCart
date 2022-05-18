@@ -9,9 +9,9 @@ const API = axios.create({ baseURL: "http://localhost:5000" });
 export const login = (params: { user_email: string, user_password: string }) => API.post('/auth/login', params);
 
 export const getAllCountries = () => API.get('/address/getAllCountries');
-export const getStatesFor = (country: { country_id: number }) => API.post('/address/getStatesFor', country);
-export const getCitiesFor = (state: { state_id: number }) => API.post('/address/getCitiesFor', state);
-export const getAllAddressOfUser = (user_email: { user_email: string }) => API.post('/address/getAllAddressOfUser', user_email);
+export const getStatesFor = (country_id: number) => API.get('/address/getStatesFor', { params: { country_id } });
+export const getCitiesFor = (state_id: number) => API.get('/address/getCitiesFor', { params: { state_id } });
+export const getAllAddressOfUser = (user_email: string) => API.get('/address/getAllAddressOfUser', { params: { user_email } });
 export const addNewAddress = (address: {
     user_email: string,
     address: string,
@@ -33,7 +33,7 @@ export const filterTheProducts = (param: {
     items: productType[]
 }) => API.post('products/filterTheProducts', param)
 
-export const getCart = (user_email: { user_email: string }) => API.post('/order/getCart', user_email);
+export const getCart = (user_email: string) => API.get(`/order/getCart`, { params: { user_email } });
 
 export const addProductToCart = (data: {
     user_id: number,
@@ -48,17 +48,18 @@ export const getQuantityOfProducts = (data: any) => API.post('products/getQuanti
 export const updateCart = (data: {
     user_id: number,
     product_name: string,
-    color: string,
-    size: string,
+    product_color: string,
+    product_size: string,
     quantity: number
 }) => API.post('/order/updateCart', data);
 
 export const placeOrder = (data: {
     user_id: number,
     address_id: number,
-    total: number
+    total_amount: number
 }) => API.post('/order/placeOrder', data);
 
 
 export const getProductsOnScreen = () => API.get('products/getProductsOnScreen');
-export const setProductsOnScreen = (data: { productsOnScreen: productType[] }) => API.post('products/setProductsOnScreen', data)
+export const setProductsOnScreen = (data: { productsOnScreen: productType[] }) => API.post('products/setProductsOnScreen', data);
+export const updateProduct = (data: { name: string, color: string, size: string, quantity: number }) => API.post('products/updateProduct', data);

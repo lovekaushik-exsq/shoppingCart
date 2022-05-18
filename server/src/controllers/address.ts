@@ -14,19 +14,19 @@ export const addNewAddress = async (req: Request, res: Response) => {
 }
 
 export const getStatesFor = async (req: Request, res: Response) => {
-    const { country_id } = req.body;
+    const country_id = Number(req.query.country_id as string);
     const data: state[] = await getStatesForService(country_id);
     res.send(data);
 }
 
 export const getCitiesFor = async (req: Request, res: Response) => {
-    const { state_id } = req.body;
+    const state_id = Number(req.query.state_id as string);
     const data: city[] = await getCitiesForService(state_id);
     res.send(data);
 }
 
 export const getAllAddressOfUser = async (req: Request, res: Response) => {
-    const { user_email } = req.body;
+    const user_email = req.query.user_email as string;
     const allAddress = await getAllAddressOfUserService(user_email);
     res.send(allAddress);
 }

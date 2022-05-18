@@ -1,12 +1,11 @@
 import express, { Application } from "express";
-import { connection } from "./sqlconfig/connection";
+import { connection, pool } from './sqlconfig/connection'
 import cors from "cors";
 import dotenv from "dotenv";
-
-const auth = require('./routes/auth');
-const products = require("./routes/products");
-const order = require("./routes/cartAndOrder");
-const address = require("./routes/address");
+import auth from './routes/auth';
+import products from "./routes/products";
+import order from "./routes/cartAndOrder";
+import address from "./routes/address";
 
 const app: Application = express();
 dotenv.config();
@@ -30,4 +29,8 @@ app.listen(5000, () => {
         if (err) throw err;
         console.log("Database connected.")
     })
+    // pool.getConnection(function (err: Error) {
+    //     if (err) throw err;
+    //     console.log("Database connected.")
+    // })
 })

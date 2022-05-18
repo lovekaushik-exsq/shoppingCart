@@ -1,6 +1,5 @@
 import * as api from "./api/index";
 import { showProducts } from "./products";
-// import { getProductsOnScreen, setProductsOnScreen } from "./productsVisible";
 import { productType } from "./types";
 
 export const search = async () => {

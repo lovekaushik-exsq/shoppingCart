@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./bundle.js" defer></script>
     <link rel="stylesheet" href="./styles/formStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
     <title>Login</title>
   </head>
   <body id="loginPage">
@@ -20,13 +24,19 @@
           id="email"
           placeholder="Enter you email"
         />
-        <label for="password"><b>Password</b></label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Enter your Password"
-        />
+        <p class="pass">
+          <label for="password"><b>Password *</b></label>
+          <button style="all: unset" class="togglePassword">
+            <i class="bi bi-eye-slash" id="icon"></i>
+          </button>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Enter your Password"
+            required
+          />
+        </p>
         <button id="submitLogin" type="submit">Login</button>
       </div>
     </form>

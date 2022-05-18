@@ -16,7 +16,7 @@ if (profile) {
 }
 export const loadCart = async (cart: HTMLElement) => {
     const user_email = user.user_email;
-    const { data }: { data: cart[] } = await api.getCart({ user_email });
+    const { data }: { data: cart[] } = await api.getCart(user_email);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
         return;
@@ -70,7 +70,7 @@ const increaseItem = (item: Element, idx: number) => {
     item.querySelector('#increase')?.addEventListener('click', async () => {
         const profile = JSON.parse(localStorage.getItem('profile')!);
         const user_email = profile.data.userInfo.user_email;
-        const { data } = await api.getCart({ user_email });
+        const { data } = await api.getCart(user_email);
         const product: cart = data[idx];
         let currentQuantity = product.quantity;
         let price = product.product_price_per_unit;
@@ -84,10 +84,11 @@ const increaseItem = (item: Element, idx: number) => {
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity + 1)).toString();
         const user_id = profile.data.userInfo.user_id;
         const product_name = product.product_name;
-        const color = product.product_color;
-        const size = product.product_size;
+        const product_color = product.product_color;
+        const product_size = product.product_size;
         let quantity = product.quantity + 1;
-        await api.updateCart({ user_id, product_name, color, size, quantity });
+        await api.updateCart({ user_id, product_name, product_color, product_size, quantity });
+        await productUpdate(product_name, product_color, product_size, 1);
         return;
     })
 }
@@ -96,7 +97,7 @@ const decreaseItem = (item: HTMLElement, idx: number) => {
     item.querySelector('#decrease')?.addEventListener('click', async () => {
         const profile = JSON.parse(localStorage.getItem('profile')!);
         const user_email = profile.data.userInfo.user_email;
-        const { data } = await api.getCart({ user_email });
+        const { data } = await api.getCart(user_email);
         const product: cart = data[idx];
         let currentQuantity = product.quantity;
         let price = product.product_price_per_unit;
@@ -105,14 +106,25 @@ const decreaseItem = (item: HTMLElement, idx: number) => {
         }
         const user_id = profile.data.userInfo.user_id;
         const product_name = product.product_name;
-        const color = product.product_color;
-        const size = product.product_size;
+        const product_color = product.product_color;
+        const product_size = product.product_size;
         let quantity = product.quantity - 1;
         item.querySelector('#quantity')!.innerHTML = (currentQuantity - 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity - 1)).toString();
-        await api.updateCart({ user_id, product_name, color, size, quantity });
+        await api.updateCart({ user_id, product_name, product_color, product_size, quantity });
+        await productUpdate(product_name, product_color, product_size, -1);
         return;
     })
+}
+
+const productUpdate = async (name: string, color: string, size: string, quantity: number) => {
+    const param = {
+        name,
+        color,
+        size,
+        quantity
+    }
+    await api.updateProduct(param);
 }
 
 const getQuantity = async (item: Element) => {
@@ -124,7 +136,7 @@ const getQuantity = async (item: Element) => {
 }
 
 const getAddress = async (user_email: string) => {
-    const { data } = await api.getAllAddressOfUser({ user_email });
+    const { data } = await api.getAllAddressOfUser(user_email);
     document.getElementById('selectAddress')!.innerHTML = (`
         <label for="address"><b>Address: </b></label>
         <select name="address" id="address">
@@ -136,7 +148,7 @@ const getAddress = async (user_email: string) => {
                 ${state},
                 ${country} - ${zip_code}
                 </option>`))}
-                <option value='-1'> -- other -- </option>
+                <option value='-1'> -- Add address -- </option>
         </select>
     `)
     const select = document.getElementById('address') as HTMLSelectElement;
@@ -167,9 +179,9 @@ export const placeOrder = async () => {
         alert("Please give valid address.");
         return;
     }
-    const { data }: { data: cart[] } = await api.getCart({ user_email: user.user_email });
-    const total = calculateTotal(data);
-    const p = await api.placeOrder({ user_id: user.user_id, address_id, total });
+    const { data }: { data: cart[] } = await api.getCart(user.user_email);
+    const total_amount = calculateTotal(data);
+    const p = await api.placeOrder({ user_id: user.user_id, address_id, total_amount });
     alert(p.data);
     openCart();
 }

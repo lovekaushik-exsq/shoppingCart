@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import products from "../products";
 import { productType } from "../types";
-import { filterTheProductsService, getAllFilterOfProductsService, getAllProductsByService, getProductByIdService, getProductsOnScreenService, getQuantityOfProductsService, searchProductByService, setProductsOnScreenService } from "../services/products";
+import { filterTheProductsService, getAllFilterOfProductsService, getAllProductsByService, getProductByIdService, getProductsOnScreenService, getQuantityOfProductsService, searchProductByService, setProductsOnScreenService, updateProductService } from "../services/products";
 export const getAllProducts = (req: Request, res: Response) => {
     return res.send(products);
 }
@@ -48,5 +48,13 @@ export const getProductsOnScreen = (req: Request, res: Response) => {
 export const setProductsOnScreen = (req: Request, res: Response) => {
     const { productsOnScreen } = req.body;
     const data = setProductsOnScreenService(productsOnScreen);
+    return res.send(data);
+}
+
+export const updateProduct = (req: Request, res: Response) => {
+    console.log("in update product controller");
+    console.log(req.body);
+    const { name, color, size, quantity }: { name: string, color: string, size: string, quantity: number } = req.body;
+    const data = updateProductService(name, color, size, quantity);
     return res.send(data);
 }

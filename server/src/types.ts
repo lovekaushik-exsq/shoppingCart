@@ -1,4 +1,4 @@
-export type entity = user | address | country | state | city | cart;
+export type entity = user | address | country | state | city | cart | number | string;
 
 export interface loginDetail {
     user_email: string,
@@ -70,8 +70,12 @@ export type cart = {
     product_size: string,
     product_color: string,
     product_price_per_unit: number,
-    quantity: number,
-    order_date: null | Date,
-    address_id: null | number,
-    total: null | number
+    quantity: number
+}
+
+export type order = {
+    user_id: number
+    address_id: number,
+    total_amount: number,
+    order_date?: Date
 }

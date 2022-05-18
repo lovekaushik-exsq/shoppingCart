@@ -24,8 +24,7 @@ export const emptyField = (fields: any) => {
 
 export const validPhoneNumber = (phone: string): boolean => {
     let valid: boolean = true;
-
-    if (isNumber(phone) && String.length != 10) {
+    if (isNumber(phone) && phone.length != 10) {
         setMessage("Not a valid phone number");
         valid = false;
     }
@@ -39,7 +38,6 @@ const isNumber = (str: string): boolean => {
     if (str.trim() === '') {
         return false;
     }
-
     return !Number.isNaN(Number(str));
 }
 
@@ -53,4 +51,16 @@ export const passwordValidate = (password: string, confirmPassword: string): boo
         goodPassword = false;
     }
     return goodPassword;
+}
+
+export const togglePassword = () => {
+    document.querySelectorAll('.pass').forEach(toggle => {
+        toggle.querySelector('.togglePassword')!.addEventListener('click', (e: Event) => {
+            e.preventDefault();
+            const visibility = toggle!.querySelector('input');
+            const type = visibility!.getAttribute("type") === "password" ? "text" : "password";
+            visibility!.setAttribute("type", type);
+            toggle.querySelector('#icon')?.classList.toggle("bi-eye");
+        })
+    })
 }

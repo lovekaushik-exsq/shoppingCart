@@ -110,7 +110,7 @@ const loggedIn = () => {
 export const addToCart = async (product: productType, variant: productVariant) => {
     const profile = JSON.parse(localStorage.getItem('profile')!);
     const user = profile.data.userInfo;
-    const cart = await api.getCart({ user_email: user.user_email });
+    const cart = await api.getCart(user.user_email);
     const data = {
         user_id: user.user_id,
         product_name: product.title,
@@ -123,6 +123,13 @@ export const addToCart = async (product: productType, variant: productVariant) =
         return;
     }
     const ans = await api.addProductToCart(data);
+    const param = {
+        name: product.title,
+        color: variant.color,
+        size: variant.size,
+        quantity: 1
+    }
+    await api.updateProduct(param);
     alert(`${product.title} added to cart.`)
 }
 

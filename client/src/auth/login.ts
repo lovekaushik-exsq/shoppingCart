@@ -1,15 +1,16 @@
 import * as api from "../api/index";
 import { addToCart } from "../productDetail";
-import { validEmail, emptyField } from "../utilities/validation";
+import { validEmail, emptyField, togglePassword } from "../utilities/validation";
 import { getMessage } from "../utilities/messages";
 
 export const loadLogin = () => {
     const user = localStorage.getItem('profile');
+    togglePassword();
     if (user) {
         window.location.href = 'index.html';
     }
 }
-export const validateLogin = (e: Event) => {
+export const validateLogin = async (e: Event) => {
     e.preventDefault();
     const user_email = (<HTMLInputElement>document.getElementById("email")).value;
     const user_password = (<HTMLInputElement>document.getElementById("password")).value;
@@ -21,7 +22,7 @@ export const validateLogin = (e: Event) => {
         document.getElementById('msg')!.innerHTML = getMessage();
         return;
     }
-    submitLogin(params);
+    await submitLogin(params);
 }
 
 const submitLogin = async (params: { user_email: string, user_password: string }) => {
