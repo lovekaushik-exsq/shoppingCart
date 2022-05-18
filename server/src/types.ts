@@ -5,6 +5,8 @@ export interface loginDetail {
     user_password: string
 }
 
+//lets create something
+
 export type user = {
     user_id?: number,
     user_name: string,
