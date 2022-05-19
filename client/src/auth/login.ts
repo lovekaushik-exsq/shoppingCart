@@ -1,7 +1,8 @@
 import * as api from "../api/index";
-import { addToCart } from "../productDetail";
+import { addToCart } from "../components/product/productDetail";
 import { validEmail, emptyField, togglePassword } from "../utilities/validation";
 import { getMessage } from "../utilities/messages";
+import { profileModel } from "../models/types";
 
 export const loadLogin = () => {
     const user = localStorage.getItem('profile');
@@ -12,25 +13,28 @@ export const loadLogin = () => {
 }
 export const validateLogin = async (e: Event) => {
     e.preventDefault();
-    const user_email = (<HTMLInputElement>document.getElementById("email")).value;
-    const user_password = (<HTMLInputElement>document.getElementById("password")).value;
+    const userEmail = (<HTMLInputElement>document.getElementById("email")).value;
+    const userPassword = (<HTMLInputElement>document.getElementById("password")).value;
     const params = {
-        user_email,
-        user_password,
+        userEmail,
+        userPassword,
     };
-    if (emptyField(params) || !validEmail(user_email)) {
+
+    if (emptyField(params) || !validEmail(userEmail)) {
         document.getElementById('msg')!.innerHTML = getMessage();
         return;
     }
     await submitLogin(params);
 }
 
-const submitLogin = async (params: { user_email: string, user_password: string }) => {
-    const data = await api.login(params);
-    if (typeof data.data == 'string') {
-        document.getElementById('msg')!.innerHTML = data.data;
+const submitLogin = async (params: { userEmail: string, userPassword: string }) => {
+    const data = new profileModel((await api.login(params)).data);
+    if (typeof data == 'string') {
+        document.getElementById('msg')!.innerHTML = data;
         return;
     }
+
+    //Add modals
     localStorage.setItem('profile', JSON.stringify(data));
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);

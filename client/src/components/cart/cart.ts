@@ -1,6 +1,6 @@
-import * as api from "./api/index";
-import { getTextOfDropDown, showCountry } from "./auth/register";
-import { cart, item, user } from "./types";
+import * as api from "../../api/index";
+import { getTextOfDropDown, showCountry } from "../../auth/register";
+import { addressModel, cartModel, item, makeArray, profileModel, userType } from "../../models/types";
 
 export const openCart = () => {
     if (!localStorage.getItem('profile')) {
@@ -9,34 +9,34 @@ export const openCart = () => {
     window.location.href = "cart.html";
 }
 
-const profile = JSON.parse(localStorage.getItem('profile')!);
-let user: user;
+const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
+let user: userType;
 if (profile) {
-    user = profile.data.userInfo;
+    user = profile.userInfo;
 }
 export const loadCart = async (cart: HTMLElement) => {
-    const user_email = user.user_email;
-    const { data }: { data: cart[] } = await api.getCart(user_email);
+    const userEmail = user.userEmail;
+    const data: cartModel[] = makeArray((await api.getCart(userEmail)).data, cartModel);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
         return;
     }
     showCart(data);
-    getAddress(user_email);
+    getAddress(userEmail);
 }
 
-const showCart = (data: cart[]) => {
+const showCart = (data: cartModel[]) => {
     const carts: HTMLElement = document.getElementById("cartProducts")!;
-    carts!.innerHTML = data.map(({ product_name, product_color, product_size, quantity, product_price_per_unit }: item) => (`
+    carts!.innerHTML = data.map(({ productName, productColor, productSize, quantity, productPricePerUnit }: item) => (`
     <div class="item">
         <div class="buttons">
             <span class="delete-btn"></span>
             <span class="like-btn></span>
         </div>
         <div class="description">
-            Name: <span id="name">${product_name}</span>,
-            Color: <span id="color">${product_color}</span>,
-            Size: <span id="size">${product_size}</span>
+            Name: <span id="name">${productName}</span>,
+            Color: <span id="color">${productColor}</span>,
+            Size: <span id="size">${productSize}</span>
         </div>
         <div class="quantity">
             <button class="plus-btn" type="button" name="button" id="increase">
@@ -47,8 +47,8 @@ const showCart = (data: cart[]) => {
                 <i class="fa fa-minus" aria-hidden="true"></i>
             </button>
         </div>
-        <div class="price">Rs.<span id="price">${product_price_per_unit}</span> </div>
-        <div class="total-price">Rs.<span id="totalPrice">${(product_price_per_unit * quantity!)}</span></div>
+        <div class="price">Rs.<span id="price">${productPricePerUnit}</span> </div>
+        <div class="total-price">Rs.<span id="totalPrice">${(productPricePerUnit * quantity!)}</span></div>
     </div>
     <div>
     </div>
@@ -59,7 +59,7 @@ const showCart = (data: cart[]) => {
 
 }
 
-const addFunctionalityToCarts = (data: cart[]) => {
+const addFunctionalityToCarts = (data: cartModel[]) => {
     document.querySelectorAll('.item').forEach((item: Element, i: number) => {
         increaseItem(item, i);
         decreaseItem(item as HTMLElement, i);
@@ -68,12 +68,12 @@ const addFunctionalityToCarts = (data: cart[]) => {
 
 const increaseItem = (item: Element, idx: number) => {
     item.querySelector('#increase')?.addEventListener('click', async () => {
-        const profile = JSON.parse(localStorage.getItem('profile')!);
-        const user_email = profile.data.userInfo.user_email;
-        const { data } = await api.getCart(user_email);
-        const product: cart = data[idx];
+        const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
+        const userEmail = profile.userInfo.userEmail;
+        const data = makeArray((await api.getCart(userEmail)).data, cartModel);
+        const product: cartModel = data[idx];
         let currentQuantity = product.quantity;
-        let price = product.product_price_per_unit;
+        let price = product.productPricePerUnit;
         let totalQuantity = await getQuantity(item);
         if (currentQuantity >= totalQuantity) {
             alert("products Finished");
@@ -82,37 +82,37 @@ const increaseItem = (item: Element, idx: number) => {
         //update the cart
         item.querySelector('#quantity')!.innerHTML = (currentQuantity + 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity + 1)).toString();
-        const user_id = profile.data.userInfo.user_id;
-        const product_name = product.product_name;
-        const product_color = product.product_color;
-        const product_size = product.product_size;
+        const userId = profile.userInfo.userId;
+        const productName = product.productName;
+        const productColor = product.productColor;
+        const productSize = product.productSize;
         let quantity = product.quantity + 1;
-        await api.updateCart({ user_id, product_name, product_color, product_size, quantity });
-        await productUpdate(product_name, product_color, product_size, 1);
+        await api.updateCart({ userId, productName, productColor, productSize, quantity });
+        await productUpdate(productName, productColor, productSize, 1);
         return;
     })
 }
 
 const decreaseItem = (item: HTMLElement, idx: number) => {
     item.querySelector('#decrease')?.addEventListener('click', async () => {
-        const profile = JSON.parse(localStorage.getItem('profile')!);
-        const user_email = profile.data.userInfo.user_email;
-        const { data } = await api.getCart(user_email);
-        const product: cart = data[idx];
+        const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
+        const userEmail = profile.userInfo.userEmail;
+        const data = makeArray((await api.getCart(userEmail)).data, cartModel);
+        const product: cartModel = data[idx];
         let currentQuantity = product.quantity;
-        let price = product.product_price_per_unit;
+        let price = product.productPricePerUnit;
         if (currentQuantity == 1) {
             item.style.display = 'none';
         }
-        const user_id = profile.data.userInfo.user_id;
-        const product_name = product.product_name;
-        const product_color = product.product_color;
-        const product_size = product.product_size;
+        const userId = profile.userInfo.userId;
+        const productName = product.productName;
+        const productColor = product.productColor;
+        const productSize = product.productSize;
         let quantity = product.quantity - 1;
         item.querySelector('#quantity')!.innerHTML = (currentQuantity - 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity - 1)).toString();
-        await api.updateCart({ user_id, product_name, product_color, product_size, quantity });
-        await productUpdate(product_name, product_color, product_size, -1);
+        await api.updateCart({ userId, productName, productColor, productSize, quantity });
+        await productUpdate(productName, productColor, productSize, -1);
         return;
     })
 }
@@ -128,25 +128,26 @@ const productUpdate = async (name: string, color: string, size: string, quantity
 }
 
 const getQuantity = async (item: Element) => {
-    let product_name = item.querySelector('#name')?.innerHTML;
+    let productName = item.querySelector('#name')?.innerHTML;
     let color = item.querySelector('#color')?.innerHTML;
     let size = item.querySelector('#size')?.innerHTML;
-    const { data } = await api.getQuantityOfProducts({ product_name, color, size });
+    const { data } = await api.getQuantityOfProducts({ productName, color, size });
     return Number(data);
 }
 
-const getAddress = async (user_email: string) => {
-    const { data } = await api.getAllAddressOfUser(user_email);
+const getAddress = async (userEmail: string) => {
+    console.log((await api.getAllAddressOfUser(userEmail)).data)
+    const data = makeArray((await api.getAllAddressOfUser(userEmail)).data, addressModel);
     document.getElementById('selectAddress')!.innerHTML = (`
         <label for="address"><b>Address: </b></label>
         <select name="address" id="address">
         <option default disabled selected value> -- select address for delivery -- </option>
-            ${data.map(({ address_id, address, city, state, country, zip_code }: { address_id: number, address: string, city: string, state: string, country: string, zip_code: number }, i: number) =>
-    (`<option value=${address_id}>
+            ${data.map(({ addressId, address, city, state, country, zipCode }: addressModel, i: number) =>
+    (`<option value=${addressId}>
                 ${address},
                 ${city},
                 ${state},
-                ${country} - ${zip_code}
+                ${country} - ${zipCode}
                 </option>`))}
                 <option value='-1'> -- Add address -- </option>
         </select>
@@ -154,8 +155,8 @@ const getAddress = async (user_email: string) => {
     const select = document.getElementById('address') as HTMLSelectElement;
 
     select?.addEventListener('change', () => {
-        const address_id = Number(select.options[select.selectedIndex].value);
-        if (address_id == -1) {
+        const addressId = Number(select.options[select.selectedIndex].value);
+        if (addressId == -1) {
             document.getElementById("newAddress")!.style.display = 'block';
             getNewAddress();
             return;
@@ -168,28 +169,27 @@ const getAddress = async (user_email: string) => {
 
 export const placeOrder = async () => {
     const select = document.getElementById('address') as HTMLSelectElement;
-    const profile = JSON.parse(localStorage.getItem('profile')!);
-    const user = profile.data.userInfo;
-    let address_id: number = Number(select.options[select.selectedIndex].value);
+    const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
+    const user = profile.userInfo;
+    let addressId: number = Number(select.options[select.selectedIndex].value);
 
-    if (address_id == -1) {
-        address_id = await getNewAddressId();
+    if (addressId == -1) {
+        addressId = await getNewAddressId();
     }
-    if (address_id == 0) {
+    if (addressId == 0) {
         alert("Please give valid address.");
         return;
     }
-    const { data }: { data: cart[] } = await api.getCart(user.user_email);
-    const total_amount = calculateTotal(data);
-    const p = await api.placeOrder({ user_id: user.user_id, address_id, total_amount });
-    alert(p.data);
+    const data: cartModel[] = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+    const totalAmount = calculateTotal(data);
+    const p = await api.placeOrder({ userId: user.userId, addressId, totalAmount });
     openCart();
 }
 
-const calculateTotal = (products: cart[]) => {
+const calculateTotal = (products: cartModel[]) => {
     let total = 0;
     products.forEach((product) => {
-        total += product.product_price_per_unit * product.quantity;
+        total += product.productPricePerUnit * product.quantity;
     })
     return total;
 }
@@ -246,15 +246,15 @@ const checkAddressValidation = (data: any) => {
 
 const getNewAddressId = async () => {
     const address = (<HTMLInputElement>document.getElementById("addressText"))!.value;
-    const zip_code = (<HTMLInputElement>document.getElementById("zipCode"))!.value;
+    const zipCode = (<HTMLInputElement>document.getElementById("zipCode"))!.value;
     const country = getTextOfDropDown('country')!;
     const state = getTextOfDropDown('state')!;
     const city = getTextOfDropDown('city')!;
-    const user_email: string = user.user_email;
+    const userEmail: string = user.userEmail;
     const data = {
-        user_email,
+        userEmail,
         address,
-        zip_code,
+        zipCode,
         country,
         state,
         city
@@ -262,6 +262,6 @@ const getNewAddressId = async () => {
     if (!checkAddressValidation(data)) {
         return 0;
     }
-    const id = (await api.addNewAddress(data)).data;
-    return Number(id);
+    const id = Number((await api.addNewAddress(data)).data);
+    return id;
 }

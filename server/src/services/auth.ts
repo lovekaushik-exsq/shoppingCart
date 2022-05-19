@@ -1,22 +1,22 @@
 import * as userQueries from "../repository/userQueries";
-import { loginDetail, user, userInfo, result } from "../types";
+import { userInfoModel, result, loginDetailModel, userModel } from "../models/types";
 const jwt = require("jsonwebtoken");
 
-export const loginService = async (inputUserDetail: loginDetail): Promise<result> => {
-    const userInfo: user = await userQueries.getUserByEmail(inputUserDetail.user_email);
-    if (!userInfo || userInfo.user_password != inputUserDetail.user_password) {
+export const loginService = async (inputUserDetail: loginDetailModel): Promise<result> => {
+    const user_info: userModel = await userQueries.getUserByEmail(inputUserDetail.user_email);
+    if (!user_info || user_info.user_password != inputUserDetail.user_password) {
         return "Invalid Credentials"
     }
-    const userToken = { email: userInfo.user_email };
-    const token: string = jwt.sign(userToken, "secret", { expiresIn: "1h" });
+    const user_token = { email: user_info.user_email };
+    const token: string = jwt.sign(user_token, "secret", { expiresIn: "1h" });
     if (!token) {
         return "Token Didn't get created";
     }
-    return { userInfo, token };
+    return { user_info, token };
 }
 
-export const registerService = async (inputUserDetail: userInfo): Promise<result> => {
-    const existingUser: user = await (userQueries.getUserByEmail(inputUserDetail.user_email));
+export const registerService = async (inputUserDetail: userInfoModel): Promise<result> => {
+    const existingUser: userModel = await (userQueries.getUserByEmail(inputUserDetail.user_email));
     if (existingUser) {
         return "User already exist.";
     }
@@ -24,16 +24,16 @@ export const registerService = async (inputUserDetail: userInfo): Promise<result
     if (addressIsGiven(inputUserDetail)) {
         addAddressForUser(inputUserDetail);
     }
-    const userInfo: user = await (userQueries.getUserByEmail(inputUserDetail.user_email));
-    const userToken = { email: userInfo.user_email };
-    const token: string = jwt.sign(userToken, "secret", { expiresIn: "1h" });
+    const user_info: userModel = await (userQueries.getUserByEmail(inputUserDetail.user_email));
+    const user_token = { email: user_info.user_email };
+    const token: string = jwt.sign(user_token, "secret", { expiresIn: "1h" });
     if (!token) {
         return "Token Didn't get created";
     }
-    return { userInfo, token };
+    return { user_info, token };
 }
 
-const addAddressForUser = async (inputUserDetail: userInfo) => {
+const addAddressForUser = async (inputUserDetail: userInfoModel) => {
     let addressId = ((await userQueries.getAddressId(inputUserDetail))).address_id;
     if (!addressId) {
         addressId = (await userQueries.addNewAddress(inputUserDetail)).address_id;
@@ -44,10 +44,10 @@ const addAddressForUser = async (inputUserDetail: userInfo) => {
     }
 }
 
-const addressIsGiven = (fields: userInfo) => {
+const addressIsGiven = (fields: userInfoModel) => {
     let address = true;
     for (let key in fields) {
-        if (fields[key as keyof userInfo] === "") {
+        if (fields[key as keyof userInfoModel] === "") {
             address = false;
             break;
         }

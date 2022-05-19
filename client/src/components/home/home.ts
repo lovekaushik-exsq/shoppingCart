@@ -1,8 +1,8 @@
-import * as api from "./api/index";
+import * as api from "../../api/index";
 import { filter } from "./filter";
-import { showProducts } from "./products";
+import { showProducts } from "../product/products";
 import { search } from "./searchProduct";
-import { productType } from "./types";
+import { makeArray, productTypeModel } from "../../models/types";
 export const loadHomePage = (homePage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
     const logout: HTMLElement = document.getElementById('logout')!;
@@ -13,15 +13,16 @@ export const loadHomePage = (homePage: HTMLElement) => {
         const urlParams: URLSearchParams = new URLSearchParams(queryString);
         const type: string | null = urlParams.get("type");
 
-        let { data }: { data: productType[] } = await api.getAllProductsBy({ type });
+        const input = (await api.getAllProductsBy({ type })).data;
+        let data: productTypeModel[] = makeArray(input, productTypeModel);
+        console.log("main", data);
         await api.setProductsOnScreen({ productsOnScreen: data });
         const user = localStorage.getItem('profile');
         user != null ? login.style.display = 'none' : login.style.display = 'block';
         user != null ? logout.style.display = 'block' : logout.style.display = 'none';
         await keepFilter();
         await keepSearch()
-        console.log("main", data);
-        const productsOnScreen: productType[] = (await api.getProductsOnScreen()).data;
+        const productsOnScreen: productTypeModel[] = makeArray((await api.getProductsOnScreen()).data, productTypeModel);
         if (productsOnScreen) {
             data = productsOnScreen;
             console.log("change main", data);

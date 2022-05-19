@@ -1,7 +1,7 @@
 import * as mysql from 'mysql';
 // import { connection } from "../sqlconfig/connection";
 import { connection, pool } from "../sqlconfig/connection";
-import { entity } from "../types";
+import { entity } from "../models/types";
 
 //Running the sql queries
 export const runQuery = async (sql: string): Promise<entity[]> => {
