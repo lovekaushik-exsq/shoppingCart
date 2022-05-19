@@ -1,5 +1,5 @@
-import * as api from "./api/index";
-import { cart, item, productType, productVariant } from "./types";
+import * as api from "../../api/index";
+import { cartModel, item, makeArray, productTypeModel, productVariantModel } from "../../models/types";
 export const loadProductDetail = (productDetailPage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
     const logout: HTMLElement = document.getElementById('logout')!;
@@ -11,13 +11,13 @@ export const loadProductDetail = (productDetailPage: HTMLElement) => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const id: number = Number(urlParams.get("idx"));
-        const { data } = await api.getProductById({ id: id });
+        const data: productTypeModel = new productTypeModel((await api.getProductById({ id })).data);
         showProductDetail(id, data);
     }
 }
 
 const productDetail = document.getElementById('productDetail');
-const showProductDetail = (idx: number, data: productType) => {
+const showProductDetail = (idx: number, data: productTypeModel) => {
 
     productDetail!.innerHTML = (`<main>
          <div class="container">
@@ -42,30 +42,16 @@ const showProductDetail = (idx: number, data: productType) => {
          </main>
          <div class="row" id="variants"></div>
      `)
-    const variants: productVariant[] = data.variants;
+    const variants: productVariantModel[] = data.variants;
     selectVariant(data, variants);
-
-    // document.getElementById("variants")!.innerHTML = variants.map(({ color, size, available_units }: productVariant, i: number) =>
-    // (
-    //     `<div class="column" id="${i}">
-    //             <div class="card">
-    //             <p>color: ${color}</p>
-    //             <p>size: ${size}</p>
-    //             <p>units: ${available_units}</p>
-    //         <p><button class="addBtn">Add to Cart</button></p>
-    //         </div>
-    //     </div>`
-    // )
-    // ).join("");
-    // addToCartFunctionality(data, variants);
 }
 
-const selectVariant = (data: productType, variants: productVariant[]) => {
+const selectVariant = (data: productTypeModel, variants: productVariantModel[]) => {
     document.getElementById("variants")!.innerHTML = (`
     <label>Select variant</label>
     <select name="variantSelection" id="variantSelection">
         <option default disabled selected value=-1> -- select variant -- </option>
-            ${variants.map(({ color, size }: productVariant, i: number) => (`<option value=${i}>color: ${color}, size: ${size}
+            ${variants.map(({ color, size }: productVariantModel, i: number) => (`<option value=${i}>color: ${color}, size: ${size}
         </option>`))}
     </select>
     <p><button class="addBtn">Add to Cart</button></p>
@@ -87,18 +73,6 @@ const selectVariant = (data: productType, variants: productVariant[]) => {
 
 }
 
-// const addToCartFunctionality = (productData: productType, variants: productVariant[]) => {
-//     productDetail?.querySelectorAll(".column").forEach((variant: Element, i: number) => {
-//         variant.querySelector('.addBtn')?.addEventListener('click', (e: Event) => {
-//             e.preventDefault();
-//             if (!loggedIn()) {
-//                 return window.location.href = `login.html?item-id=${productData.id}&variant-id=${i}`;
-//             }
-//             addToCart(productData, variants[i]);
-//         })
-//     })
-// }
-
 const loggedIn = () => {
     const profile = JSON.parse(localStorage.getItem('profile')!);
     if (profile) {
@@ -107,22 +81,22 @@ const loggedIn = () => {
     return false;
 }
 
-export const addToCart = async (product: productType, variant: productVariant) => {
+export const addToCart = async (product: productTypeModel, variant: productVariantModel) => {
     const profile = JSON.parse(localStorage.getItem('profile')!);
-    const user = profile.data.userInfo;
-    const cart = await api.getCart(user.user_email);
+    const user = profile.userInfo;
+    const cart = makeArray((await api.getCart(user.userEmail)).data, cartModel);
     const data = {
-        user_id: user.user_id,
-        product_name: product.title,
-        product_size: variant.size,
-        product_color: variant.color,
-        product_price_per_unit: product.price
+        userId: user.userId,
+        productName: product.title,
+        productSize: variant.size,
+        productColor: variant.color,
+        productPricePerUnit: product.price
     }
-    if (productFinished(cart.data, data, variant.available_units)) {
+    if (productFinished(cart, data, variant.availableUnits)) {
         alert("Products finished.")
         return;
     }
-    const ans = await api.addProductToCart(data);
+    await api.addProductToCart(data);
     const param = {
         name: product.title,
         color: variant.color,
@@ -134,10 +108,10 @@ export const addToCart = async (product: productType, variant: productVariant) =
 }
 
 //Temporary code just for now (probably to be removed)
-const productFinished = (cart: cart[], product: item, quantity: number): boolean => {
+const productFinished = (cart: cartModel[], product: item, quantity: number): boolean => {
     let flag: boolean = false;
     for (let i = 0; i < cart.length; i++) {
-        if (cart[i].product_name == product.product_name && cart[i].product_color == product.product_color && cart[i].product_size == product.product_size) {
+        if (cart[i].productName == product.productName && cart[i].productColor == product.productColor && cart[i].productSize == product.productSize) {
             if (cart[i].quantity == quantity) {
                 flag = true;
             }

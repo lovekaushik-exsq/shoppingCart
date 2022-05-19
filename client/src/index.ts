@@ -1,10 +1,10 @@
 import { loadRegister, validateRegister } from "./auth/register";
-import { loadHomePage } from "./home";
+import { loadHomePage } from "./components/home/home";
 import { loadLogin, validateLogin } from "./auth/login";
-import { loadProductDetail } from "./productDetail";
-import { search } from "./searchProduct";
-import { openFilter } from "./filter";
-import { loadCart, openCart, placeOrder } from "./cart";
+import { loadProductDetail } from "./components/product/productDetail";
+import { search } from "./components/home/searchProduct";
+import { openFilter } from "./components/home/filter";
+import { loadCart, openCart, placeOrder } from "./components/cart/cart";
 
 // Load Home page
 const homePage = document.getElementById('homePage');
@@ -54,13 +54,15 @@ document.getElementById('searchBtn')?.addEventListener('click', (e: Event) => {
 document.getElementById('clearSearch')?.addEventListener('click', () => {
     localStorage.removeItem('search');
     (<HTMLInputElement>document.getElementById('searchBar'))!.value = "";
-    window.location.href = 'index.html';
+    const prev = window.location.href;
+    window.location.href = prev;
 })
 document.getElementById('openFilter')?.addEventListener('click', openFilter)
 document.getElementById('clearFilter')?.addEventListener('click', () => {
     localStorage.removeItem('filterColors');
     localStorage.removeItem('filterSize');
-    window.location.href = 'index.html'
+    const prev = window.location.href;
+    window.location.href = prev;
 })
 document.getElementById('openCart')?.addEventListener('click', openCart);
 const cart = document.getElementById("cart");

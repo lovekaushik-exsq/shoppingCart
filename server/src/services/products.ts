@@ -1,13 +1,13 @@
 import products from "../products";
-import { productVariant, productType } from "../types";
+import { productVariantModel, productTypeModel, makeArray } from "../models/types";
 const fs = require('fs');
 
-let productsOnScreen: productType[];
+let productsOnScreen: productTypeModel[];
 export const getAllProducts = () => {
     return products;
 }
 export const getAllProductsByService = (type: string) => {
-    let output: productType[] = [];
+    let output: productTypeModel[] = [];
     for (let i = 0; i < products.length; i++) {
         if (products[i].target_group == type) {
             output.push(products[i]);
@@ -21,16 +21,16 @@ export const getProductByIdService = (id: number) => {
     return products[id];
 }
 
-export const searchProductByService = (search: string, data: productType[]) => {
+export const searchProductByService = (search: string, data: productTypeModel[]) => {
     let mySet = new Set();
     data.map(product => {
         for (const attribute in product) {
-            if (product[attribute as keyof productType].toString().toLowerCase().includes(search.toLowerCase())) {
+            if (product[attribute as keyof productTypeModel].toString().toLowerCase().includes(search.toLowerCase())) {
                 mySet.add(product);
             }
         }
     })
-    const result = Array.from(mySet.values()) as productType[]
+    const result = Array.from(mySet.values()) as productTypeModel[]
     return result;
 }
 
@@ -65,7 +65,7 @@ const getAllSizes = () => {
     return Array.from(mySet.values());
 }
 
-export const filterTheProductsService = (colors: string[], size: string[], items: productType[]) => {
+export const filterTheProductsService = (colors: string[], size: string[], items: productTypeModel[]) => {
     let mySet = new Set;
     colors.map(color => {
         let result = filterInVariant(color, items);
@@ -75,10 +75,10 @@ export const filterTheProductsService = (colors: string[], size: string[], items
         let result = filterInVariant(s, items);
         result.forEach(item => mySet.add(item));
     });
-    return Array.from(mySet.values()) as productType[];
+    return Array.from(mySet.values()) as productTypeModel[];
 }
 
-const filterInVariant = (property: string, data: productType[]) => {
+const filterInVariant = (property: string, data: productTypeModel[]) => {
     let mySet = new Set();
     if (property.trim() == "") {
         return mySet;
@@ -86,7 +86,7 @@ const filterInVariant = (property: string, data: productType[]) => {
     data.map(item => {
         item.variants.map(variant => {
             for (const attribute in variant) {
-                if (variant[attribute as keyof productVariant].toString().toLowerCase().includes(property.toLowerCase())) {
+                if (variant[attribute as keyof productVariantModel].toString().toLowerCase().includes(property.toLowerCase())) {
                     mySet.add(item);
                 }
             }
@@ -113,7 +113,7 @@ export const getProductsOnScreenService = () => {
     return productsOnScreen;
 }
 
-export const setProductsOnScreenService = (data: productType[]) => {
+export const setProductsOnScreenService = (data: productTypeModel[]) => {
     productsOnScreen = data;
 }
 
@@ -126,7 +126,7 @@ export const updateProductService = async (name: string, color: string, size: st
     var products = JSON.parse(fs.readFileSync(`${__dirname}/../repository/try.json`).toString());
     products[id].variants[variant_id].available_units -= quantity;
     if (products[id].variants[variant_id].available_units == 0) {
-        products[id].variants = products[id].variants.filter((item: productVariant) => item.available_units != 0);
+        products[id].variants = products[id].variants.filter((item: productVariantModel) => item.available_units != 0);
     }
     fs.writeFileSync(`${__dirname}/../repository/try.json`, JSON.stringify(products));
 }
