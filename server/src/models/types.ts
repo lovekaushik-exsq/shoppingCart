@@ -143,11 +143,7 @@ type productVariant = {
     color: string,
     availableUnits: number
 }
-// export type productVariant = {
-//     size: string,
-//     color: string,
-//     available_units: number
-// }
+
 export class productVariantModel {
     size: string;
     color: string;
@@ -159,17 +155,6 @@ export class productVariantModel {
     }
 }
 
-// export type productType = {
-//     id: number,
-//     image: string,
-//     category: string,
-//     sub_category: string,
-//     target_group: string,
-//     title: string,
-//     description: string,
-//     price: number,
-//     variants: productVariant[]
-// }
 type productType = {
     id: number,
     image: string,

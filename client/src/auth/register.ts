@@ -1,7 +1,9 @@
 import * as api from "../api/index";
+import { addToCart } from "../components/product/productDetail";
+import { getUrlParam } from "../utilities/param";
 import { cityModel, countryModel, makeArray, profileModel, stateModel, userRegistration } from "../models/types";
-import { getMessage, setMessage } from "../utilities/messages";
-import { emptyField, passwordValidate, togglePassword, validEmail, validPhoneNumber } from "../utilities/validation";
+import { error } from "../constants/constants";
+import { emptyField, passwordValidate, togglePassword, inValidEmail, validPhoneNumber } from "../utilities/validation";
 
 export const loadRegister = () => {
     togglePassword();
@@ -41,8 +43,9 @@ export const validateRegister = (e: Event) => {
         userPhoneNumber
     }
     e.preventDefault();
-    if (emptyField(fields) || checkValidation(fields)) {
-        document.getElementById('msg')!.innerHTML = getMessage();
+    error.length = 0;
+    if (emptyField(fields, error) || validationFail(fields, error)) {
+        document.getElementById('msg')!.innerHTML = error.join(`\n`);
         return;
     }
     submitRegister(user);
@@ -51,12 +54,18 @@ export const validateRegister = (e: Event) => {
 const submitRegister = async (user: userRegistration) => {
     let data = (await api.register(user)).data;
     if (typeof data == 'string') {
-        setMessage(data);
-        document.getElementById('msg')!.innerHTML = getMessage();
+        error.push(data);
+        document.getElementById('msg')!.innerHTML = error.join(",");
         return;
     }
     data = new profileModel(data);
     localStorage.setItem('profile', JSON.stringify(data));
+    if (getUrlParam('item-id')) {
+        const itemId = Number(getUrlParam('item-id'));
+        const variantId = Number(getUrlParam('variant-id'));
+        const result = await api.getProductById({ id: itemId });
+        addToCart(result.data, result.data.variants[variantId]);
+    }
     return window.history.go(-1);
 }
 
@@ -123,10 +132,14 @@ export const getTextOfDropDown = (id: string) => {
     return text;
 }
 
-const checkValidation = (user: userRegistration) => {
-    let error = false;
-    if (!validEmail(user.userEmail) || !passwordValidate(user.userPassword, user.confirmPassword!) || !validPhoneNumber(user.userPhoneNumber)) {
-        error = true;
+const validationFail = (user: userRegistration, error: string[]) => {
+    let err: boolean = false;
+    inValidEmail(user.userEmail, error)
+    passwordValidate(user.userPassword, user.confirmPassword!, error)
+    validPhoneNumber(user.userPhoneNumber, error);
+    if (error.length > 0) {
+        err = true;
     }
-    return error;
+
+    return err;
 }
