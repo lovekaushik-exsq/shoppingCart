@@ -1,6 +1,4 @@
 import { userRegistration, productTypeModel } from "../models/types";
-
-// import axios from "axios";
 const axios = require('axios');
 const API = axios.create({ baseURL: "http://localhost:5000" });
 

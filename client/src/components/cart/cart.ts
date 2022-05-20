@@ -2,6 +2,12 @@ import * as api from "../../api/index";
 import { getTextOfDropDown, showCountry } from "../../auth/register";
 import { addressModel, cartModel, item, makeArray, profileModel, userType } from "../../models/types";
 
+
+const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
+let user: userType;
+if (profile) {
+    user = profile.userInfo;
+}
 export const openCart = () => {
     if (!localStorage.getItem('profile')) {
         return window.location.href = 'login.html';
@@ -9,20 +15,14 @@ export const openCart = () => {
     window.location.href = "cart.html";
 }
 
-const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-let user: userType;
-if (profile) {
-    user = profile.userInfo;
-}
 export const loadCart = async (cart: HTMLElement) => {
-    const userEmail = user.userEmail;
-    const data: cartModel[] = makeArray((await api.getCart(userEmail)).data, cartModel);
+    const data: cartModel[] = makeArray((await api.getCart(user.userEmail)).data, cartModel);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
         return;
     }
     showCart(data);
-    getAddress(userEmail);
+    getAddress(user.userEmail);
 }
 
 const showCart = (data: cartModel[]) => {
@@ -59,19 +59,17 @@ const showCart = (data: cartModel[]) => {
 
 }
 
-const addFunctionalityToCarts = (data: cartModel[]) => {
-    document.querySelectorAll('.item').forEach((item: Element, i: number) => {
-        increaseItem(item, i);
-        decreaseItem(item as HTMLElement, i);
+const addFunctionalityToCarts = async (data: cartModel[]) => {
+    const products = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+    document.querySelectorAll('.item').forEach(async (item: Element, i: number) => {
+        const product: cartModel = products[i];
+        increaseItem(item, product);
+        decreaseItem(item as HTMLElement, product);
     })
 }
 
-const increaseItem = (item: Element, idx: number) => {
+const increaseItem = (item: Element, product: cartModel) => {
     item.querySelector('#increase')?.addEventListener('click', async () => {
-        const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-        const userEmail = profile.userInfo.userEmail;
-        const data = makeArray((await api.getCart(userEmail)).data, cartModel);
-        const product: cartModel = data[idx];
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
         let totalQuantity = await getQuantity(item);
@@ -93,12 +91,8 @@ const increaseItem = (item: Element, idx: number) => {
     })
 }
 
-const decreaseItem = (item: HTMLElement, idx: number) => {
+const decreaseItem = (item: HTMLElement, product: cartModel) => {
     item.querySelector('#decrease')?.addEventListener('click', async () => {
-        const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-        const userEmail = profile.userInfo.userEmail;
-        const data = makeArray((await api.getCart(userEmail)).data, cartModel);
-        const product: cartModel = data[idx];
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
         if (currentQuantity == 1) {
@@ -169,8 +163,6 @@ const getAddress = async (userEmail: string) => {
 
 export const placeOrder = async () => {
     const select = document.getElementById('address') as HTMLSelectElement;
-    const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-    const user = profile.userInfo;
     let addressId: number = Number(select.options[select.selectedIndex].value);
 
     if (addressId == -1) {
@@ -182,7 +174,7 @@ export const placeOrder = async () => {
     }
     const data: cartModel[] = makeArray((await api.getCart(user.userEmail)).data, cartModel);
     const totalAmount = calculateTotal(data);
-    const p = await api.placeOrder({ userId: user.userId, addressId, totalAmount });
+    const p = await api.placeOrder({ userId: user.userId!, addressId, totalAmount });
     openCart();
 }
 

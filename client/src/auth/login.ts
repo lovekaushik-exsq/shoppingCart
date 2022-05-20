@@ -1,8 +1,9 @@
 import * as api from "../api/index";
 import { addToCart } from "../components/product/productDetail";
-import { validEmail, emptyField, togglePassword } from "../utilities/validation";
-import { getMessage } from "../utilities/messages";
+import { inValidEmail, emptyField, togglePassword } from "../utilities/validation";
+import { error } from "../constants/constants";
 import { profileModel } from "../models/types";
+import { getUrlParam } from "../utilities/param";
 
 export const loadLogin = () => {
     const user = localStorage.getItem('profile');
@@ -19,28 +20,27 @@ export const validateLogin = async (e: Event) => {
         userEmail,
         userPassword,
     };
-
-    if (emptyField(params) || !validEmail(userEmail)) {
-        document.getElementById('msg')!.innerHTML = getMessage();
+    error.length = 0;
+    if (emptyField(params, error) || inValidEmail(userEmail, error)) {
+        document.getElementById('msg')!.innerHTML = error.join(",");
         return;
     }
     await submitLogin(params);
 }
 
 const submitLogin = async (params: { userEmail: string, userPassword: string }) => {
-    const data = new profileModel((await api.login(params)).data);
+    let data = (await api.login(params)).data;
     if (typeof data == 'string') {
         document.getElementById('msg')!.innerHTML = data;
         return;
     }
+    data = new profileModel(data);
 
     //Add modals
     localStorage.setItem('profile', JSON.stringify(data));
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    if (urlParams.get('item-id')) {
-        const itemId = Number(urlParams.get('item-id'));
-        const variantId = Number(urlParams.get('variant-id'));
+    if (getUrlParam('item-id')) {
+        const itemId = Number(getUrlParam('item-id'));
+        const variantId = Number(getUrlParam('variant-id'));
         const result = await api.getProductById({ id: itemId });
         addToCart(result.data, result.data.variants[variantId]);
     }

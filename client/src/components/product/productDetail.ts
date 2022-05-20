@@ -1,4 +1,5 @@
 import * as api from "../../api/index";
+import { getUrlParam } from "../../utilities/param";
 import { cartModel, item, makeArray, productTypeModel, productVariantModel } from "../../models/types";
 export const loadProductDetail = (productDetailPage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
@@ -8,9 +9,7 @@ export const loadProductDetail = (productDetailPage: HTMLElement) => {
         user != null ? login.style.display = 'none' : login.style.display = 'block';
         user != null ? logout.style.display = 'block' : logout.style.display = 'none';
 
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const id: number = Number(urlParams.get("idx"));
+        const id: number = Number(getUrlParam("idx"));
         const data: productTypeModel = new productTypeModel((await api.getProductById({ id })).data);
         showProductDetail(id, data);
     }

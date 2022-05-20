@@ -3,15 +3,14 @@ import { filter } from "./filter";
 import { showProducts } from "../product/products";
 import { search } from "./searchProduct";
 import { makeArray, productTypeModel } from "../../models/types";
+import { getUrlParam } from "../../utilities/param";
 export const loadHomePage = (homePage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
     const logout: HTMLElement = document.getElementById('logout')!;
     loadFilter();
     homePage!.onload = async (e: Event) => {
         e.preventDefault();
-        const queryString: string = window.location.search;
-        const urlParams: URLSearchParams = new URLSearchParams(queryString);
-        const type: string | null = urlParams.get("type");
+        const type = getUrlParam("type");
 
         const input = (await api.getAllProductsBy({ type })).data;
         let data: productTypeModel[] = makeArray(input, productTypeModel);

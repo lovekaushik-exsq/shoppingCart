@@ -1,20 +1,18 @@
-import { setMessage } from "./messages";
-
-export const validEmail = (email: string) => {
-    let valid: boolean = false;
+export const inValidEmail = (email: string, error: string[]) => {
+    let valid: boolean = true;
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-        valid = true;
+        valid = false;
     } else {
-        setMessage("You have entered an invalid email address!");
+        error.push("You have entered an invalid email address!");
     }
     return valid;
 }
 
-export const emptyField = (fields: any) => {
+export const emptyField = (fields: any, error: string[]) => {
     let empty = false;
     for (let key in fields) {
         if (fields[key] === "") {
-            setMessage("Field is empty");
+            error.push("Field is empty");
             empty = true;
             break;
         }
@@ -22,35 +20,30 @@ export const emptyField = (fields: any) => {
     return empty;
 }
 
-export const validPhoneNumber = (phone: string): boolean => {
+export const validPhoneNumber = (phone: string, error: string[]): boolean => {
     let valid: boolean = true;
-    if (isNumber(phone) && phone.length != 10) {
-        setMessage("Not a valid phone number");
+    if (Number.isNaN(Number(phone)) || phone.trim().length != 10) {
+        error.push("Not a valid phone number");
         valid = false;
     }
     return valid;
 }
 
 const isNumber = (str: string): boolean => {
-    if (typeof str !== 'string') {
-        return false;
-    }
-    if (str.trim() === '') {
-        return false;
-    }
     return !Number.isNaN(Number(str));
 }
 
-export const passwordValidate = (password: string, confirmPassword: string): boolean => {
+export const passwordValidate = (password: string, confirmPassword: string, error: string[]): boolean => {
     let goodPassword = true;
     if (password.length < 8) {
-        setMessage("Password is weak must be at least 8 character long.")
-    }
-    else if (password != confirmPassword) {
-        setMessage("Password and confirm Password Doesn't match.")
+        error.push("Password is weak must be at least 8 character long.")
         goodPassword = false;
     }
-    return goodPassword;
+    else if (password != confirmPassword) {
+        error.push("Password and confirm Password Doesn't match.")
+        goodPassword = false;
+    }
+    return !goodPassword;
 }
 
 export const togglePassword = () => {
