@@ -6,6 +6,7 @@ import { search } from "./components/home/searchProduct";
 import { openFilter } from "./components/home/filter";
 import { loadCart, openCart, placeOrder } from "./components/cart/cart";
 import { profile } from "./components/home/profile";
+import { loadOrders, openOrders } from "./components/cart/order";
 
 // Load Home page
 const homePage = document.getElementById('homePage');
@@ -77,3 +78,9 @@ if (cart != null) {
 }
 
 document.getElementById("placeOrder")?.addEventListener('click', placeOrder);
+
+document.getElementById("getOrders")?.addEventListener('click', openOrders);
+const orders = document.getElementById('orders');
+if (orders != null) {
+    loadOrders();
+}

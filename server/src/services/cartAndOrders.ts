@@ -38,3 +38,10 @@ export const updateCartService = async (product: cartModel) => {
 export const placeOrderService = async (order: orderModel) => {
     await cartQueries.placeOrder(order);
 }
+
+
+export const getAllOrdersForUserService = async (user_email: string) => {
+    const user: userModel = await getUserByEmail(user_email);
+    let orders = await cartQueries.getAllOrdersForUser(user.user_id!);
+    return orders;
+}

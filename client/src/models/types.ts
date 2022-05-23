@@ -152,7 +152,9 @@ export type item = {
     productColor: string,
     productSize: string,
     quantity?: number,
-    productPricePerUnit: number
+    productPricePerUnit: number,
+    orderDate?: Date,
+    prev?: Date
 }
 
 type address = {

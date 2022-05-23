@@ -39,9 +39,12 @@ export const placeOrder = async (order: orderModel) => {
 }
 
 
-
-
-
+//Get orders
+export const getAllOrdersForUser = async (id: number): Promise<cartModel[]> => {
+    sql = `SELECT * FROM to_buy WHERE (to_buy.user_id = ${id} && to_buy.order_date IS NOT NULL)`;
+    let orders = (await runQuery(sql)) as cartModel[];
+    return orders;
+}
 // export const getAllOrdersForUser = async (user_email: string): Promise<object | null> => {
 //     const user: user = await getUserByEmail(user_email);
 //     sql = `SELECT * FROM to_buy WHERE (to_buy.user_id = ${user.user_id} && to_buy.order_date IS NOT NULL)`;

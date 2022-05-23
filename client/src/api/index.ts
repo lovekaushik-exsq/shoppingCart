@@ -33,6 +33,7 @@ export const filterTheProducts = (param: {
 }) => API.post('products/filterTheProducts', param)
 
 export const getCart = (userEmail: string) => API.get(`/order/getCart`, { params: { userEmail } });
+export const getOrders = (userEmail: string) => API.get(`/order/getOrders`, { params: { userEmail } });
 
 export const addProductToCart = (data: {
     userId: number,
