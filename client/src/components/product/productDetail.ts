@@ -3,11 +3,11 @@ import { getUrlParam } from "../../utilities/param";
 import { cartModel, item, makeArray, productTypeModel, productVariantModel } from "../../models/types";
 export const loadProductDetail = (productDetailPage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
-    const logout: HTMLElement = document.getElementById('logout')!;
+    const profile: HTMLElement = document.getElementById('profile')!;
     productDetailPage.onload = async () => {
         const user = localStorage.getItem('profile');
         user != null ? login.style.display = 'none' : login.style.display = 'block';
-        user != null ? logout.style.display = 'block' : logout.style.display = 'none';
+        user != null ? profile.style.display = 'block' : profile.style.display = 'none';
 
         const id: number = Number(getUrlParam("idx"));
         const data: productTypeModel = new productTypeModel((await api.getProductById({ id })).data);

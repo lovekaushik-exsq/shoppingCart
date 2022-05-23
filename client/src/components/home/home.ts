@@ -6,7 +6,7 @@ import { makeArray, productTypeModel } from "../../models/types";
 import { getUrlParam } from "../../utilities/param";
 export const loadHomePage = (homePage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
-    const logout: HTMLElement = document.getElementById('logout')!;
+    const profile: HTMLElement = document.getElementById('profile')!;
     loadFilter();
     homePage!.onload = async (e: Event) => {
         e.preventDefault();
@@ -18,7 +18,7 @@ export const loadHomePage = (homePage: HTMLElement) => {
         await api.setProductsOnScreen({ productsOnScreen: data });
         const user = localStorage.getItem('profile');
         user != null ? login.style.display = 'none' : login.style.display = 'block';
-        user != null ? logout.style.display = 'block' : logout.style.display = 'none';
+        user != null ? profile.style.display = 'block' : profile.style.display = 'none';
         await keepFilter();
         await keepSearch()
         const productsOnScreen: productTypeModel[] = makeArray((await api.getProductsOnScreen()).data, productTypeModel);
