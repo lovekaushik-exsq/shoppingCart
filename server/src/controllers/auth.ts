@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { loginService, registerService } from "../services/auth";
-import { loginDetailModel, result, userInfoModel } from "../models/types";
+import { LoginDetailModel, Result, UserInfoModel } from "../models/types";
 
 //Login
 export const login = async (req: Request, res: Response) => {
-    const input = new loginDetailModel(req.body);
-    const { user_email, user_password } = input;
-    const data: result = await loginService({ user_email, user_password });
+    const input = new LoginDetailModel(req.body);
+    const data: Result = await loginService(input);
     return res.send(data);
 }
 
 //Register
 export const register = async (req: Request, res: Response) => {
-    const input = new userInfoModel(req.body);
-    const data: result = await registerService(input);
+    const input = new UserInfoModel(req.body);
+    const data: Result = await registerService(input);
     return res.send(data);
 }

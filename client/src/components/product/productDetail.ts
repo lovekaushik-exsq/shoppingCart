@@ -1,22 +1,24 @@
 import * as api from "../../api/index";
-import { getUrlParam } from "../../utilities/param";
-import { cartModel, item, makeArray, productTypeModel, productVariantModel } from "../../models/types";
+import { getUrlParam } from "../../utilities/generalFunction";
+import * as messages from "../../constants/constants"
+import { CartModel, IItem, ProductTypeModel, ProductVariantModel } from "../../models/types";
+import { makeArray } from "../../utilities/generalFunction";
 export const loadProductDetail = (productDetailPage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
-    const logout: HTMLElement = document.getElementById('logout')!;
+    const profile: HTMLElement = document.getElementById('profile')!;
     productDetailPage.onload = async () => {
         const user = localStorage.getItem('profile');
         user != null ? login.style.display = 'none' : login.style.display = 'block';
-        user != null ? logout.style.display = 'block' : logout.style.display = 'none';
+        user != null ? profile.style.display = 'block' : profile.style.display = 'none';
 
         const id: number = Number(getUrlParam("idx"));
-        const data: productTypeModel = new productTypeModel((await api.getProductById({ id })).data);
+        const data: ProductTypeModel = new ProductTypeModel((await api.getProductById(id)).data);
         showProductDetail(id, data);
     }
 }
 
 const productDetail = document.getElementById('productDetail');
-const showProductDetail = (idx: number, data: productTypeModel) => {
+const showProductDetail = (idx: number, data: ProductTypeModel) => {
 
     productDetail!.innerHTML = (`<main>
          <div class="container">
@@ -41,16 +43,16 @@ const showProductDetail = (idx: number, data: productTypeModel) => {
          </main>
          <div class="row" id="variants"></div>
      `)
-    const variants: productVariantModel[] = data.variants;
+    const variants: ProductVariantModel[] = data.variants;
     selectVariant(data, variants);
 }
 
-const selectVariant = (data: productTypeModel, variants: productVariantModel[]) => {
+const selectVariant = (data: ProductTypeModel, variants: ProductVariantModel[]) => {
     document.getElementById("variants")!.innerHTML = (`
     <label>Select variant</label>
     <select name="variantSelection" id="variantSelection">
         <option default disabled selected value=-1> -- select variant -- </option>
-            ${variants.map(({ color, size }: productVariantModel, i: number) => (`<option value=${i}>color: ${color}, size: ${size}
+            ${variants.map(({ color, size }: ProductVariantModel, i: number) => (`<option value=${i}>color: ${color}, size: ${size}
         </option>`))}
     </select>
     <p><button class="addBtn">Add to Cart</button></p>
@@ -61,7 +63,7 @@ const selectVariant = (data: productTypeModel, variants: productVariantModel[]) 
         const select = document.getElementById('variantSelection') as HTMLSelectElement;
         const variantId = Number(select.options[select.selectedIndex].value);
         if (variantId == -1) {
-            alert("Select your size and color first");
+            alert(messages.chooseFirst);
             return;
         }
         if (!loggedIn()) {
@@ -80,10 +82,10 @@ const loggedIn = () => {
     return false;
 }
 
-export const addToCart = async (product: productTypeModel, variant: productVariantModel) => {
+export const addToCart = async (product: ProductTypeModel, variant: ProductVariantModel) => {
     const profile = JSON.parse(localStorage.getItem('profile')!);
     const user = profile.userInfo;
-    const cart = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+    const cart = makeArray((await api.getCart(user.userEmail)).data, CartModel);
     const data = {
         userId: user.userId,
         productName: product.title,
@@ -92,7 +94,7 @@ export const addToCart = async (product: productTypeModel, variant: productVaria
         productPricePerUnit: product.price
     }
     if (productFinished(cart, data, variant.availableUnits)) {
-        alert("Products finished.")
+        alert(messages.productFinished)
         return;
     }
     await api.addProductToCart(data);
@@ -107,7 +109,7 @@ export const addToCart = async (product: productTypeModel, variant: productVaria
 }
 
 //Temporary code just for now (probably to be removed)
-const productFinished = (cart: cartModel[], product: item, quantity: number): boolean => {
+const productFinished = (cart: CartModel[], product: IItem, quantity: number): boolean => {
     let flag: boolean = false;
     for (let i = 0; i < cart.length; i++) {
         if (cart[i].productName == product.productName && cart[i].productColor == product.productColor && cart[i].productSize == product.productSize) {

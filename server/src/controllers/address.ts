@@ -1,29 +1,27 @@
 import { NextFunction, Request, Response } from "express";
+import { AddressModel } from "../models/types";
 import { getAllCountriesService, getStatesForService, getCitiesForService, getAllAddressOfUserService, addNewAddressService } from "../services/address";
-import { countryModel, stateModel, cityModel } from "../models/types";
 
 export const getAllCountries = async (req: Request, res: Response) => {
-    const data: countryModel[] = await getAllCountriesService();
+    const data = await getAllCountriesService();
     res.send(data);
 }
 
 export const addNewAddress = async (req: Request, res: Response) => {
-    const { userEmail, address, city, state, zipCode, country } = req.body;
-    const user_email = userEmail;
-    const zip_code = zipCode;
-    const data: number = await addNewAddressService(user_email, address, city, state, zip_code, country);
+    const newAddress = new AddressModel(req.body);
+    const data = await addNewAddressService(newAddress);
     return res.send(data.toString());
 }
 
 export const getStatesFor = async (req: Request, res: Response) => {
-    const country_id = Number(req.query.countryId as string);
-    const data: stateModel[] = await getStatesForService(country_id);
+    const country_id = +req.query.countryId!;
+    const data = await getStatesForService(country_id);
     res.send(data);
 }
 
 export const getCitiesFor = async (req: Request, res: Response) => {
-    const state_id = Number(req.query.stateId as string);
-    const data: cityModel[] = await getCitiesForService(state_id);
+    const state_id = +req.query.stateId!;
+    const data = await getCitiesForService(state_id);
     res.send(data);
 }
 

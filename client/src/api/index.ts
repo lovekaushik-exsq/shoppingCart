@@ -1,4 +1,4 @@
-import { userRegistration, productTypeModel } from "../models/types";
+import { IUserRegistration, ProductTypeModel } from "../models/types";
 const axios = require('axios');
 const API = axios.create({ baseURL: "http://localhost:5000" });
 
@@ -19,20 +19,21 @@ export const addNewAddress = (address: {
     country: string
 }) => API.post('/address/addNewAddress', address);
 
-export const register = (params: userRegistration) => API.post('/auth/register', params);
+export const register = (params: IUserRegistration) => API.post('/auth/register', params);
 
 export const getAllProducts = () => API.get('/products/getAllProducts');
-export const getProductById = (id: { id: number }) => API.post('/products/getProductById', id);
-export const getAllProductsBy = (type: { type: string | null }) => API.post('/products/getAllProductsBy', type);
-export const searchProductBy = (searchParams: { searchValue: string, data: productTypeModel[] }) => API.post('/products/searchProductBy', searchParams);
+export const getProductById = (id: number) => API.get('/products/getProductById', { params: { id } });
+export const getAllProductsBy = (type: string | null) => API.get('/products/getAllProductsBy', { params: { type } });
+export const searchProductBy = (searchParams: { searchValue: string, data: ProductTypeModel[] }) => API.post('/products/searchProductBy', searchParams);
 export const getAllFiltersOfProducts = () => API.get('products/getAllFiltersOfProducts');
 export const filterTheProducts = (param: {
     colors: string[],
     size: string[],
-    items: productTypeModel[]
+    items: ProductTypeModel[]
 }) => API.post('products/filterTheProducts', param)
 
 export const getCart = (userEmail: string) => API.get(`/order/getCart`, { params: { userEmail } });
+export const getOrders = (userEmail: string) => API.get(`/order/getOrders`, { params: { userEmail } });
 
 export const addProductToCart = (data: {
     userId: number,
@@ -60,5 +61,5 @@ export const placeOrder = (data: {
 
 
 export const getProductsOnScreen = () => API.get('products/getProductsOnScreen');
-export const setProductsOnScreen = (data: { productsOnScreen: productTypeModel[] }) => API.post('products/setProductsOnScreen', data);
+export const setProductsOnScreen = (data: { productsOnScreen: ProductTypeModel[] }) => API.post('products/setProductsOnScreen', data);
 export const updateProduct = (data: { name: string, color: string, size: string, quantity: number }) => API.post('products/updateProduct', data);

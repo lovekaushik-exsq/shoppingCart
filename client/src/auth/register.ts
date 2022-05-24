@@ -1,8 +1,9 @@
 import * as api from "../api/index";
 import { addToCart } from "../components/product/productDetail";
-import { getUrlParam } from "../utilities/param";
-import { cityModel, countryModel, makeArray, profileModel, stateModel, userRegistration } from "../models/types";
-import { error } from "../constants/constants";
+import { getUrlParam } from "../utilities/generalFunction";
+import { CityModel, CountryModel, ProfileModel, StateModel, IUserRegistration } from "../models/types";
+import { makeArray } from "../utilities/generalFunction";
+import { error } from "../utilities/globalVariables";
 import { emptyField, passwordValidate, togglePassword, inValidEmail, validPhoneNumber } from "../utilities/validation";
 
 export const loadRegister = () => {
@@ -24,7 +25,7 @@ export const validateRegister = (e: Event) => {
     const country = getTextOfDropDown('country');
     const state = getTextOfDropDown('state');
     const city = getTextOfDropDown('city');
-    const user: userRegistration = {
+    const user: IUserRegistration = {
         userName,
         userEmail,
         userPassword,
@@ -51,19 +52,19 @@ export const validateRegister = (e: Event) => {
     submitRegister(user);
 }
 
-const submitRegister = async (user: userRegistration) => {
+const submitRegister = async (user: IUserRegistration) => {
     let data = (await api.register(user)).data;
     if (typeof data == 'string') {
         error.push(data);
         document.getElementById('msg')!.innerHTML = error.join(",");
         return;
     }
-    data = new profileModel(data);
+    data = new ProfileModel(data);
     localStorage.setItem('profile', JSON.stringify(data));
     if (getUrlParam('item-id')) {
         const itemId = Number(getUrlParam('item-id'));
         const variantId = Number(getUrlParam('variant-id'));
-        const result = await api.getProductById({ id: itemId });
+        const result = await api.getProductById(itemId);
         addToCart(result.data, result.data.variants[variantId]);
     }
     return window.history.go(-1);
@@ -73,12 +74,12 @@ export const showCountry = async () => {
 
     const countryArea = document.getElementById('countryArea')!;
     const { data } = await api.getAllCountries();
-    let countries: countryModel[] = makeArray(data, countryModel);
+    let countries: CountryModel[] = makeArray(data, CountryModel);
     countryArea.innerHTML = (`
         <label for="country"><b>Country: </b></label>
         <select name="country" id="country">
         <option default disabled selected value> -- select your country -- </option>
-            ${countries.map(({ countryId, countryName }: countryModel) => (`<option value=${countryId}>${countryName}</option>`))}
+            ${countries.map(({ countryId, countryName }: CountryModel) => (`<option value=${countryId}>${countryName}</option>`))}
         </select>
     `)
     const select = document.getElementById('country') as HTMLSelectElement;
@@ -91,12 +92,12 @@ export const showCountry = async () => {
 const showState = async (countryId: number) => {
     const stateArea = document.getElementById('stateArea')!;
     const { data } = await api.getStatesFor(countryId);
-    const states = makeArray(data, stateModel);
+    const states = makeArray(data, StateModel);
     stateArea.innerHTML = (`
         <label for="state"><b>Choose a country: </b></label>
         <select name="state" id="state">
         <option default disabled selected value> -- select your state -- </option>
-            ${states.map(({ stateId, stateName }: stateModel) => (`<option value=${stateId}>${stateName}</option>`))}
+            ${states.map(({ stateId, stateName }: StateModel) => (`<option value=${stateId}>${stateName}</option>`))}
         </select>
     `);
     const select = document.getElementById('state') as HTMLSelectElement;
@@ -110,12 +111,12 @@ const showState = async (countryId: number) => {
 const showCity = async (stateId: number) => {
     const cityArea = document.getElementById('cityArea')!;
     const { data } = await api.getCitiesFor(stateId);
-    const cities = makeArray(data, cityModel);
+    const cities = makeArray(data, CityModel);
     cityArea.innerHTML = (`
         <label for="city"><b>Choose a city: </b></label>
         <select name="city" id="city">
         <option default disabled selected value> -- select your city -- </option>
-            ${cities.map(({ cityId, cityName }: cityModel) => (`<option value="${cityId}">${cityName}</option>`))}
+            ${cities.map(({ cityId, cityName }: CityModel) => (`<option value="${cityId}">${cityName}</option>`))}
         </select>
     `)
 }
@@ -132,7 +133,7 @@ export const getTextOfDropDown = (id: string) => {
     return text;
 }
 
-const validationFail = (user: userRegistration, error: string[]) => {
+const validationFail = (user: IUserRegistration, error: string[]) => {
     let err: boolean = false;
     inValidEmail(user.userEmail, error)
     passwordValidate(user.userPassword, user.confirmPassword!, error)

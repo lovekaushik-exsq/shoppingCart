@@ -1,13 +1,13 @@
 import products from "../products";
-import { productVariantModel, productTypeModel, makeArray } from "../models/types";
+import { ProductVariantModel, ProductTypeModel } from "../models/types";
 const fs = require('fs');
 
-let productsOnScreen: productTypeModel[];
+let productsOnScreen: ProductTypeModel[];
 export const getAllProducts = () => {
     return products;
 }
 export const getAllProductsByService = (type: string) => {
-    let output: productTypeModel[] = [];
+    let output: ProductTypeModel[] = [];
     for (let i = 0; i < products.length; i++) {
         if (products[i].target_group == type) {
             output.push(products[i]);
@@ -21,16 +21,16 @@ export const getProductByIdService = (id: number) => {
     return products[id];
 }
 
-export const searchProductByService = (search: string, data: productTypeModel[]) => {
+export const searchProductByService = (search: string, data: ProductTypeModel[]) => {
     let mySet = new Set();
     data.map(product => {
         for (const attribute in product) {
-            if (product[attribute as keyof productTypeModel].toString().toLowerCase().includes(search.toLowerCase())) {
+            if (product[attribute as keyof ProductTypeModel].toString().toLowerCase().includes(search.toLowerCase())) {
                 mySet.add(product);
             }
         }
     })
-    const result = Array.from(mySet.values()) as productTypeModel[]
+    const result = Array.from(mySet.values()) as ProductTypeModel[]
     return result;
 }
 
@@ -47,7 +47,7 @@ export const getAllFilterOfProductsService = () => {
 const getAllColors = () => {
     let mySet = new Set();
     products.map(product => {
-        product.variants.map(color => {
+        product.variants.map((color: ProductVariantModel) => {
             mySet.add(color.color);
         })
     })
@@ -58,14 +58,14 @@ const getAllColors = () => {
 const getAllSizes = () => {
     let mySet = new Set();
     products.map(product => {
-        product.variants.map(size => {
+        product.variants.map((size: ProductVariantModel) => {
             mySet.add(size.size);
         })
     })
     return Array.from(mySet.values());
 }
 
-export const filterTheProductsService = (colors: string[], size: string[], items: productTypeModel[]) => {
+export const filterTheProductsService = (colors: string[], size: string[], items: ProductTypeModel[]) => {
     let mySet = new Set;
     colors.map(color => {
         let result = filterInVariant(color, items);
@@ -75,10 +75,10 @@ export const filterTheProductsService = (colors: string[], size: string[], items
         let result = filterInVariant(s, items);
         result.forEach(item => mySet.add(item));
     });
-    return Array.from(mySet.values()) as productTypeModel[];
+    return Array.from(mySet.values()) as ProductTypeModel[];
 }
 
-const filterInVariant = (property: string, data: productTypeModel[]) => {
+const filterInVariant = (property: string, data: ProductTypeModel[]) => {
     let mySet = new Set();
     if (property.trim() == "") {
         return mySet;
@@ -86,7 +86,7 @@ const filterInVariant = (property: string, data: productTypeModel[]) => {
     data.map(item => {
         item.variants.map(variant => {
             for (const attribute in variant) {
-                if (variant[attribute as keyof productVariantModel].toString().toLowerCase().includes(property.toLowerCase())) {
+                if (variant[attribute as keyof ProductVariantModel].toString().toLowerCase().includes(property.toLowerCase())) {
                     mySet.add(item);
                 }
             }
@@ -99,7 +99,7 @@ export const getQuantityOfProductsService = (product_name: string, color: string
     let quantity: number = 0;
     products.map(product => {
         if (product.title == product_name) {
-            product.variants.map(variant => {
+            product.variants.map((variant: ProductVariantModel) => {
                 if (variant.color == color && variant.size == size) {
                     quantity = variant.available_units;
                 }
@@ -113,7 +113,7 @@ export const getProductsOnScreenService = () => {
     return productsOnScreen;
 }
 
-export const setProductsOnScreenService = (data: productTypeModel[]) => {
+export const setProductsOnScreenService = (data: ProductTypeModel[]) => {
     productsOnScreen = data;
 }
 
@@ -126,7 +126,7 @@ export const updateProductService = async (name: string, color: string, size: st
     var products = JSON.parse(fs.readFileSync(`${__dirname}/../repository/try.json`).toString());
     products[id].variants[variant_id].available_units -= quantity;
     if (products[id].variants[variant_id].available_units == 0) {
-        products[id].variants = products[id].variants.filter((item: productVariantModel) => item.available_units != 0);
+        products[id].variants = products[id].variants.filter((item: ProductVariantModel) => item.available_units != 0);
     }
     fs.writeFileSync(`${__dirname}/../repository/try.json`, JSON.stringify(products));
 }
@@ -144,7 +144,7 @@ const getProductId = (name: string) => {
 
 const getVariantId = (id: number, color: string, size: string) => {
     let idx = -1;
-    products[id].variants.map((variant, i) => {
+    products[id].variants.map((variant: ProductVariantModel, i: number) => {
         if (variant.color == color && variant.size == size) {
             idx = i;
             return;

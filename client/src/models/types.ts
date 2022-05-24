@@ -1,4 +1,5 @@
-export interface userType {
+import { makeArray } from "../utilities/generalFunction";
+export interface IUserType {
     userId?: number,
     userName: string,
     userEmail: string,
@@ -6,52 +7,66 @@ export interface userType {
     userPhoneNumber: string
 }
 
-interface country {
+interface ICountryResponse {
     country_id: number,
     country_name: string,
 }
-export class countryModel {
+interface ICountry {
+    countryId: number,
+    countryName: string
+}
+export class CountryModel implements ICountry {
     countryId: number;
     countryName: string;
-    constructor(input: country) {
+    constructor(input: ICountryResponse) {
         this.countryId = input.country_id;
         this.countryName = input.country_name;
     }
 }
 
-interface state {
+interface IStateResponse {
     country_id: number,
     state_id: number,
     state_name: string
 }
-export class stateModel {
+interface IState {
+    countryId: number,
+    stateId: number,
+    stateName: string
+}
+export class StateModel implements IState {
     countryId: number;
     stateId: number;
     stateName: string;
-    constructor(input: state) {
+    constructor(input: IStateResponse) {
         this.countryId = input.country_id;
         this.stateId = input.state_id;
         this.stateName = input.state_name;
     }
 }
 
-interface city {
+interface ICityResponse {
     state_id: number,
     city_id: number,
     city_name: string
 }
-export class cityModel {
+interface ICity {
+    stateId: number,
+    cityId: number,
+    cityName: string
+}
+export class CityModel implements ICity {
     stateId: number;
     cityId: number;
     cityName: string;
-    constructor(input: city) {
+    constructor(input: ICityResponse) {
         this.stateId = input.state_id;
         this.cityId = input.city_id;
         this.cityName = input.city_name;
     }
 }
 
-export interface userRegistration extends userType {
+export interface IUserRegistration extends IUserType {
     confirmPassword?: string,
     address?: string,
     zipCode?: string,
@@ -60,23 +75,28 @@ export interface userRegistration extends userType {
     city?: string | null
 }
 
-type productVariant = {
+interface IProductVariantResponse {
     size: string,
     color: string,
     available_units: number
 }
-export class productVariantModel {
+interface IProductVariant {
+    size: string,
+    color: string,
+    availableUnits: number
+}
+export class ProductVariantModel implements IProductVariant {
     size: string;
     color: string;
     availableUnits: number;
-    constructor(input: productVariant) {
+    constructor(input: IProductVariantResponse) {
         this.size = input.size;
         this.color = input.color;
         this.availableUnits = input.available_units;
     }
 }
 
-type productType = {
+interface IProductTypeResponse {
     id: number,
     image: string,
     category: string,
@@ -85,10 +105,20 @@ type productType = {
     title: string,
     description: string,
     price: number,
-    variants: productVariant[];
+    variants: IProductVariantResponse[];
 }
-
-export class productTypeModel {
+interface IProductType {
+    id: number,
+    image: string,
+    category: string,
+    subCategory: string,
+    targetGroup: string,
+    title: string,
+    description: string,
+    price: number,
+    variants: ProductVariantModel[]
+}
+export class ProductTypeModel implements IProductType {
     id: number;
     image: string;
     category: string;
@@ -97,8 +127,8 @@ export class productTypeModel {
     title: string;
     description: string;
     price: number;
-    variants: productVariantModel[];
-    constructor(input: productType) {
+    variants: ProductVariantModel[];
+    constructor(input: IProductTypeResponse) {
         this.id = input.id;
         this.image = input.image;
         this.category = input.category;
@@ -107,11 +137,11 @@ export class productTypeModel {
         this.title = input.title;
         this.description = input.description;
         this.price = input.price;
-        this.variants = makeArray(input.variants, productVariantModel);
+        this.variants = makeArray(input.variants, ProductVariantModel);
     }
 }
 
-type cart = {
+interface ICartResponse {
     user_id: number,
     product_name: string,
     product_size: string,
@@ -122,8 +152,18 @@ type cart = {
     address_id?: number,
     total?: number
 }
-
-export class cartModel {
+interface ICart {
+    userId: number,
+    productName: string,
+    productSize: string,
+    productColor: string,
+    productPricePerUnit: number,
+    quantity: number,
+    orderDate?: Date,
+    addressId?: number,
+    total?: number
+}
+export class CartModel implements ICart {
     userId: number;
     productName: string;
     productSize: string;
@@ -133,7 +173,7 @@ export class cartModel {
     orderDate?: Date;
     addressId?: number;
     total?: number;
-    constructor(input: cart) {
+    constructor(input: ICartResponse) {
         this.userId = input.user_id;
         this.productName = input.product_name;
         this.productSize = input.product_size;
@@ -146,16 +186,18 @@ export class cartModel {
     }
 }
 
-export type item = {
+export interface IItem {
     userId?: number,
     productName: string,
     productColor: string,
     productSize: string,
     quantity?: number,
-    productPricePerUnit: number
+    productPricePerUnit: number,
+    orderDate?: Date,
+    prev?: Date
 }
 
-type address = {
+interface IAddressResponse {
     address_id: number,
     address: string,
     city: string,
@@ -163,15 +205,22 @@ type address = {
     country: string,
     zip_code: number
 }
-
-export class addressModel {
+interface IAddress {
+    addressId: number,
+    address: string,
+    city: string,
+    state: string,
+    country: string,
+    zipCode: number
+}
+export class AddressModel implements IAddress {
     addressId: number;
     address: string;
     city: string;
     state: string;
     country: string;
     zipCode: number;
-    constructor(input: address) {
+    constructor(input: IAddressResponse) {
         this.addressId = input.address_id;
         this.address = input.address;
         this.city = input.city;
@@ -181,20 +230,27 @@ export class addressModel {
     }
 }
 
-type userInfo = {
+interface IUserInfoResponse {
     user_id: number,
     user_name: string,
     user_email: string,
     user_password: string,
     user_phone_number: string
 }
-class userInfoModel {
+interface IUserInfo {
+    userId: number,
+    userName: string,
+    userEmail: string,
+    userPassword: string,
+    userPhoneNumber: string
+}
+class UserInfoModel implements IUserInfo {
     userId: number;
     userName: string;
     userEmail: string;
     userPassword: string;
     userPhoneNumber: string;
-    constructor(input: userInfo) {
+    constructor(input: IUserInfoResponse) {
         this.userId = input.user_id;
         this.userName = input.user_name;
         this.userEmail = input.user_email;
@@ -203,26 +259,20 @@ class userInfoModel {
     }
 }
 
-type profile = {
-    user_info: userInfo,
+interface IProfileResponse {
+    user_info: IUserInfoResponse,
     token: string
 }
-export class profileModel {
-    userInfo: userInfoModel;
+interface IProfile {
+    userInfo: UserInfoModel,
+    token: string
+}
+export class ProfileModel implements IProfile {
+    userInfo: UserInfoModel;
     token: string;
-    constructor(input: profile) {
-        this.userInfo = new userInfoModel(input.user_info);
+    constructor(input: IProfileResponse) {
+        this.userInfo = new UserInfoModel(input.user_info);
         this.token = input.token;
     }
 }
 
-
-
-export const makeArray = (data: any, className: any) => {
-    let output: any[] = [];
-    data.map((item: any) => {
-        let current = new className(item);
-        output.push({ ...current });
-    })
-    return output;
-}

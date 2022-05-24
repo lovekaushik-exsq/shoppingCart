@@ -1,6 +1,7 @@
 import * as api from "../../api/index";
 import { showProducts } from "../product/products";
-import { makeArray, productTypeModel } from "../../models/types";
+import { ProductTypeModel } from "../../models/types";
+import { makeArray } from "../../utilities/generalFunction";
 export const openFilter = async (e: Event) => {
     e.preventDefault();
     if (document.getElementById("filterArea")!.style.display == 'block') {
@@ -21,13 +22,13 @@ export const filter = async () => {
     if (filterCleared()) {
         return;
     }
-    let result: productTypeModel[] = await filterProducts();
+    let result: ProductTypeModel[] = await filterProducts();
     console.log("filter", result)
     showProducts(result);
 }
 
 export const filterProducts = async () => {
-    let productOnScreen: productTypeModel[] = makeArray((await api.getProductsOnScreen()).data, productTypeModel);
+    let productOnScreen: ProductTypeModel[] = makeArray((await api.getProductsOnScreen()).data, ProductTypeModel);
     if (localStorage.getItem('filterColors') == localStorage.getItem('filterSize') && localStorage.getItem('filterSize')?.trim() == "") {
         return productOnScreen;
     }
@@ -39,7 +40,7 @@ export const filterProducts = async () => {
         size,
         items: productOnScreen
     }
-    let data: productTypeModel[] = makeArray((await api.filterTheProducts(param)).data, productTypeModel);
+    let data: ProductTypeModel[] = makeArray((await api.filterTheProducts(param)).data, ProductTypeModel);
     await api.setProductsOnScreen({ productsOnScreen: data });
     return data;
 }

@@ -2,26 +2,26 @@ import * as api from "../../api/index";
 import { filter } from "./filter";
 import { showProducts } from "../product/products";
 import { search } from "./searchProduct";
-import { makeArray, productTypeModel } from "../../models/types";
-import { getUrlParam } from "../../utilities/param";
+import { ProductTypeModel } from "../../models/types";
+import { makeArray } from "../../utilities/generalFunction";
+import { getUrlParam } from "../../utilities/generalFunction";
 export const loadHomePage = (homePage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
-    const logout: HTMLElement = document.getElementById('logout')!;
+    const profile: HTMLElement = document.getElementById('profile')!;
     loadFilter();
     homePage!.onload = async (e: Event) => {
         e.preventDefault();
         const type = getUrlParam("type");
-
-        const input = (await api.getAllProductsBy({ type })).data;
-        let data: productTypeModel[] = makeArray(input, productTypeModel);
+        const input = (await api.getAllProductsBy(type)).data;
+        let data: ProductTypeModel[] = makeArray(input, ProductTypeModel);
         console.log("main", data);
         await api.setProductsOnScreen({ productsOnScreen: data });
         const user = localStorage.getItem('profile');
         user != null ? login.style.display = 'none' : login.style.display = 'block';
-        user != null ? logout.style.display = 'block' : logout.style.display = 'none';
+        user != null ? profile.style.display = 'block' : profile.style.display = 'none';
         await keepFilter();
         await keepSearch()
-        const productsOnScreen: productTypeModel[] = makeArray((await api.getProductsOnScreen()).data, productTypeModel);
+        const productsOnScreen: ProductTypeModel[] = makeArray((await api.getProductsOnScreen()).data, ProductTypeModel);
         if (productsOnScreen) {
             data = productsOnScreen;
             console.log("change main", data);

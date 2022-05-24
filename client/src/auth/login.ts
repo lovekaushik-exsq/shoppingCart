@@ -1,9 +1,9 @@
 import * as api from "../api/index";
 import { addToCart } from "../components/product/productDetail";
 import { inValidEmail, emptyField, togglePassword } from "../utilities/validation";
-import { error } from "../constants/constants";
-import { profileModel } from "../models/types";
-import { getUrlParam } from "../utilities/param";
+import { error } from "../utilities/globalVariables";
+import { ProfileModel } from "../models/types";
+import { getUrlParam } from "../utilities/generalFunction";
 
 export const loadLogin = () => {
     const user = localStorage.getItem('profile');
@@ -34,14 +34,14 @@ const submitLogin = async (params: { userEmail: string, userPassword: string }) 
         document.getElementById('msg')!.innerHTML = data;
         return;
     }
-    data = new profileModel(data);
+    data = new ProfileModel(data);
 
     //Add modals
     localStorage.setItem('profile', JSON.stringify(data));
     if (getUrlParam('item-id')) {
         const itemId = Number(getUrlParam('item-id'));
         const variantId = Number(getUrlParam('variant-id'));
-        const result = await api.getProductById({ id: itemId });
+        const result = await api.getProductById(itemId);
         addToCart(result.data, result.data.variants[variantId]);
     }
     return window.history.go(-1);

@@ -1,33 +1,34 @@
+import { AddressModel } from "../models/types";
 import * as userQueries from "../repository/userQueries";
-import { countryModel, stateModel, cityModel } from "../models/types";
+import * as messages from "../constants/messages";
 
 export const getAllAddressOfUserService = async (user_email: string) => {
     const user_id = (await userQueries.getUserByEmail(user_email)).user_id;
     if (!user_id) {
-        return "no such user exist";
+        return messages.noUser;
     }
     const allAddress = await userQueries.getAllAddressOfUser(user_id);
     return allAddress;
 }
 
-export const addNewAddressService = async (user_email: string, address: string, city: string, state: string, zip_code: number, country: string) => {
-    let addressId = (await userQueries.addNewAddress({ address, city, state, zip_code, country })).address_id;
-    let userId = (await userQueries.getUserByEmail(user_email)).user_id!;
+export const addNewAddressService = async (input: AddressModel) => {
+    let addressId = (await userQueries.addNewAddress(input)).address_id;
+    let userId = (await userQueries.getUserByEmail(input.user_email!)).user_id!;
     await userQueries.mapAddress(userId, addressId as number);
-    return addressId as number;
+    return +addressId!;
 }
 
 export const getAllCountriesService = async () => {
-    const countries: countryModel[] = await userQueries.getAllCountries();
+    const countries = await userQueries.getAllCountries();
     return countries;
 }
 
 export const getStatesForService = async (country_id: number) => {
-    const state: stateModel[] = await userQueries.getStatesFor(country_id);
+    const state = await userQueries.getStatesFor(country_id);
     return state;
 }
 
 export const getCitiesForService = async (state_id: number) => {
-    const city: cityModel[] = await userQueries.getCitiesFor(state_id);
+    const city = await userQueries.getCitiesFor(state_id);
     return city;
 }
