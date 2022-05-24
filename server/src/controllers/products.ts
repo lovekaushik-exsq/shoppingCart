@@ -1,26 +1,27 @@
 import { NextFunction, Request, Response } from "express";
 import products from "../products";
-import { makeArray, productTypeModel } from "../models/types";
+import { ProductTypeModel } from "../models/types";
 import { filterTheProductsService, getAllFilterOfProductsService, getAllProductsByService, getProductByIdService, getProductsOnScreenService, getQuantityOfProductsService, searchProductByService, setProductsOnScreenService, updateProductService } from "../services/products";
+import { makeArray } from "../utilities/modal";
 export const getAllProducts = (req: Request, res: Response) => {
     return res.send(products);
 }
 export const getAllProductsBy = (req: Request, res: Response) => {
-    const { type }: { type: string } = req.body;
-    const data: productTypeModel[] = getAllProductsByService(type);
+    const type = req.query.type as string;
+    const data = getAllProductsByService(type);
     res.send(data);
 }
 
 export const getProductById = (req: Request, res: Response) => {
-    const { id } = req.body;
-    const data: productTypeModel = getProductByIdService(id);
+    const id = Number(req.query.id);
+    const data = getProductByIdService(id);
     res.send(data);
 }
 
 export const searchProductBy = (req: Request, res: Response) => {
     const { searchValue, data } = req.body;
-    const products: productTypeModel[] = makeArray(data, productTypeModel);
-    const result: productTypeModel[] = searchProductByService(searchValue, products);
+    const products: ProductTypeModel[] = makeArray(data, ProductTypeModel);
+    const result = searchProductByService(searchValue, products);
     res.send(result);
 }
 
@@ -31,8 +32,8 @@ export const getAllFilterOfProducts = (req: Request, res: Response) => {
 
 export const filterTheProducts = (req: Request, res: Response) => {
     const { colors, size, items } = req.body;
-    const products: productTypeModel[] = makeArray(items, productTypeModel);
-    let data: productTypeModel[] = filterTheProductsService(colors, size, products);
+    const products: ProductTypeModel[] = makeArray(items, ProductTypeModel);
+    let data = filterTheProductsService(colors, size, products);
     res.send(data);
 }
 
@@ -50,7 +51,7 @@ export const getProductsOnScreen = (req: Request, res: Response) => {
 
 export const setProductsOnScreen = (req: Request, res: Response) => {
     const { productsOnScreen } = req.body;
-    const products: productTypeModel[] = makeArray(productsOnScreen, productTypeModel);
+    const products: ProductTypeModel[] = makeArray(productsOnScreen, ProductTypeModel);
     const data = setProductsOnScreenService(products);
     return res.send(data);
 }

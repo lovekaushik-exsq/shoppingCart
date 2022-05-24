@@ -8,6 +8,13 @@ import { loadCart, openCart, placeOrder } from "./components/cart/cart";
 import { profile } from "./components/home/profile";
 import { loadOrders, openOrders } from "./components/cart/order";
 
+//Disable Enter key
+window.addEventListener('keypress', (e: KeyboardEvent) => {
+    if (e.keyCode == 13) {
+        e.preventDefault();
+    }
+})
+
 // Load Home page
 const homePage = document.getElementById('homePage');
 if (homePage != null) {

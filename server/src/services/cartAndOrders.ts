@@ -1,16 +1,16 @@
 import * as cartQueries from "../repository/cartQueries";
 import { getUserByEmail } from "../repository/userQueries";
-import { cartModel, orderModel, userModel } from "../models/types";
+import { CartModel, OrderModel, UserModel } from "../models/types";
 
 export const getCartForUserService = async (user_email: string) => {
-    const user: userModel = await getUserByEmail(user_email);
+    const user: UserModel = await getUserByEmail(user_email);
     let cart = await cartQueries.getCartDataForUser(user.user_id!);
     return cart;
 }
 
-export const addProductToCartService = async (values: cartModel) => {
+export const addProductToCartService = async (values: CartModel) => {
     const { user_id, product_name, product_size, product_color, product_price_per_unit } = values;
-    const productUpdate: cartModel = {
+    const productUpdate: CartModel = {
         user_id,
         product_name,
         product_size,
@@ -25,23 +25,27 @@ export const addProductToCartService = async (values: cartModel) => {
         return;
     }
     await cartQueries.addToCart(values);
+    const addedProduct = await cartQueries.getProduct(values);
+    return addedProduct
 }
 
-export const updateCartService = async (product: cartModel) => {
+export const updateCartService = async (product: CartModel) => {
     if (product.quantity == 0) {
         await cartQueries.deleteFromCart(product);
         return;
     }
     await cartQueries.updateCart(product);
+    const updatedProduct = await cartQueries.getProduct(product);
+    return updatedProduct;
 }
 
-export const placeOrderService = async (order: orderModel) => {
+export const placeOrderService = async (order: OrderModel) => {
     await cartQueries.placeOrder(order);
 }
 
 
 export const getAllOrdersForUserService = async (user_email: string) => {
-    const user: userModel = await getUserByEmail(user_email);
+    const user: UserModel = await getUserByEmail(user_email);
     let orders = await cartQueries.getAllOrdersForUser(user.user_id!);
     return orders;
 }

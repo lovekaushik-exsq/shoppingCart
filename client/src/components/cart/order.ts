@@ -1,9 +1,10 @@
-import { cartModel, item, makeArray, profileModel, userType } from "../../models/types";
+import { CartModel, IItem, ProfileModel, IUserType } from "../../models/types";
+import { makeArray } from "../../utilities/generalFunction";
 import * as api from "../../api/index";
 import { showProducts } from "../product/products";
 
-const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-let user: userType;
+const profile: ProfileModel = JSON.parse(localStorage.getItem('profile')!);
+let user: IUserType;
 if (profile) {
     user = profile.userInfo;
 }
@@ -13,16 +14,16 @@ export const openOrders = () => {
 }
 
 export const loadOrders = async () => {
-    const data: cartModel[] = makeArray((await api.getOrders(user.userEmail)).data, cartModel);
+    const data: CartModel[] = makeArray((await api.getOrders(user.userEmail)).data, CartModel);
     console.log(data);
     showOrders(data);
 }
 
-const showOrders = (data: cartModel[]) => {
+const showOrders = (data: CartModel[]) => {
     const carts: HTMLElement = document.getElementById("orderedProducts")!;
     let prev = data[0].orderDate;
     let i = 1;
-    carts!.innerHTML = data.map(({ productName, productColor, productSize, quantity, productPricePerUnit, orderDate }: item) => (`
+    carts!.innerHTML = data.map(({ productName, productColor, productSize, quantity, productPricePerUnit, orderDate }: IItem) => (`
     Order ${prev == orderDate ? i : i = (i + 1)}
     <div class="item">
         <div class="buttons">

@@ -1,8 +1,8 @@
-import { productTypeModel } from "../../models/types";
+import { ProductTypeModel } from "../../models/types";
 
 const products: HTMLElement = document.getElementById('products')!;
-export const showProducts = (data: productTypeModel[]) => {
-    products!.innerHTML = data.map(({ image, title, price, description }: productTypeModel, i: number) =>
+export const showProducts = (data: ProductTypeModel[]) => {
+    products!.innerHTML = data.map(({ image, title, price, description }: ProductTypeModel, i: number) =>
     (
         `
         <div class="column" data-idx="${i}">
@@ -21,7 +21,7 @@ export const showProducts = (data: productTypeModel[]) => {
 
 }
 
-export const addFunctionalityToCards = (data: productTypeModel[]) => {
+export const addFunctionalityToCards = (data: ProductTypeModel[]) => {
     products.querySelectorAll('.column').forEach((product: Element, i: number) => {
         // view Product
         viewProductDetail(product, data, data[i].id);
@@ -29,7 +29,7 @@ export const addFunctionalityToCards = (data: productTypeModel[]) => {
 }
 
 
-export const viewProductDetail = (product: Element, data: productTypeModel[], i: number) => {
+export const viewProductDetail = (product: Element, data: ProductTypeModel[], i: number) => {
     product.querySelector('.viewProduct')?.addEventListener('click', () => {
         window.location.href = "productDetail.html?idx=" + i;
     })

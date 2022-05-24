@@ -1,10 +1,11 @@
 import * as api from "../../api/index";
 import { getTextOfDropDown, showCountry } from "../../auth/register";
-import { addressModel, cartModel, item, makeArray, profileModel, userType } from "../../models/types";
+import { AddressModel, CartModel, IItem, ProfileModel, IUserType } from "../../models/types";
+import { makeArray } from "../../utilities/generalFunction";
 
 
-const profile: profileModel = JSON.parse(localStorage.getItem('profile')!);
-let user: userType;
+const profile: ProfileModel = JSON.parse(localStorage.getItem('profile')!);
+let user: IUserType;
 if (profile) {
     user = profile.userInfo;
 }
@@ -16,7 +17,7 @@ export const openCart = () => {
 }
 
 export const loadCart = async (cart: HTMLElement) => {
-    const data: cartModel[] = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+    const data: CartModel[] = makeArray((await api.getCart(user.userEmail)).data, CartModel);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
         return;
@@ -25,9 +26,9 @@ export const loadCart = async (cart: HTMLElement) => {
     getAddress(user.userEmail);
 }
 
-const showCart = (data: cartModel[]) => {
+const showCart = (data: CartModel[]) => {
     const carts: HTMLElement = document.getElementById("cartProducts")!;
-    carts!.innerHTML = data.map(({ productName, productColor, productSize, quantity, productPricePerUnit }: item) => (`
+    carts!.innerHTML = data.map(({ productName, productColor, productSize, quantity, productPricePerUnit }: IItem) => (`
     <div class="item">
         <div class="buttons">
             <span class="delete-btn"></span>
@@ -59,16 +60,16 @@ const showCart = (data: cartModel[]) => {
 
 }
 
-const addFunctionalityToCarts = async (data: cartModel[]) => {
-    const products = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+const addFunctionalityToCarts = async (data: CartModel[]) => {
+    const products = makeArray((await api.getCart(user.userEmail)).data, CartModel);
     document.querySelectorAll('.item').forEach(async (item: Element, i: number) => {
-        const product: cartModel = products[i];
+        const product: CartModel = products[i];
         increaseItem(item, product);
         decreaseItem(item as HTMLElement, product);
     })
 }
 
-const increaseItem = (item: Element, product: cartModel) => {
+const increaseItem = (item: Element, product: CartModel) => {
     item.querySelector('#increase')?.addEventListener('click', async () => {
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
@@ -91,7 +92,7 @@ const increaseItem = (item: Element, product: cartModel) => {
     })
 }
 
-const decreaseItem = (item: HTMLElement, product: cartModel) => {
+const decreaseItem = (item: HTMLElement, product: CartModel) => {
     item.querySelector('#decrease')?.addEventListener('click', async () => {
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
@@ -131,12 +132,12 @@ const getQuantity = async (item: Element) => {
 
 const getAddress = async (userEmail: string) => {
     console.log((await api.getAllAddressOfUser(userEmail)).data)
-    const data = makeArray((await api.getAllAddressOfUser(userEmail)).data, addressModel);
+    const data = makeArray((await api.getAllAddressOfUser(userEmail)).data, AddressModel);
     document.getElementById('selectAddress')!.innerHTML = (`
         <label for="address"><b>Address: </b></label>
         <select name="address" id="address">
         <option default disabled selected value> -- select address for delivery -- </option>
-            ${data.map(({ addressId, address, city, state, country, zipCode }: addressModel, i: number) =>
+            ${data.map(({ addressId, address, city, state, country, zipCode }: AddressModel, i: number) =>
     (`<option value=${addressId}>
                 ${address},
                 ${city},
@@ -172,13 +173,13 @@ export const placeOrder = async () => {
         alert("Please give valid address.");
         return;
     }
-    const data: cartModel[] = makeArray((await api.getCart(user.userEmail)).data, cartModel);
+    const data: CartModel[] = makeArray((await api.getCart(user.userEmail)).data, CartModel);
     const totalAmount = calculateTotal(data);
     const p = await api.placeOrder({ userId: user.userId!, addressId, totalAmount });
     openCart();
 }
 
-const calculateTotal = (products: cartModel[]) => {
+const calculateTotal = (products: CartModel[]) => {
     let total = 0;
     products.forEach((product) => {
         total += product.productPricePerUnit * product.quantity;

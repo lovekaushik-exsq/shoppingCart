@@ -3,8 +3,8 @@ import { getAllProducts, getAllProductsBy, searchProductBy, getAllFilterOfProduc
 const router: Router = express.Router();
 
 router.get('/getAllProducts', getAllProducts);
-router.post('/getProductById', getProductById);
-router.post('/getAllProductsBy', getAllProductsBy);
+router.get('/getProductById', getProductById);
+router.get('/getAllProductsBy', getAllProductsBy);
 router.post('/searchProductBy', searchProductBy);
 router.get('/getAllFiltersOfProducts', getAllFilterOfProducts);
 router.post('/filterTheProducts', filterTheProducts);
