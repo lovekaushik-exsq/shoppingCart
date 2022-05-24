@@ -237,15 +237,15 @@ interface IUserInfoResponse {
     user_password: string,
     user_phone_number: string
 }
-interface IUserInfo {
-    userId: number,
+export interface IUserInfo {
+    userId?: number,
     userName: string,
     userEmail: string,
     userPassword: string,
     userPhoneNumber: string
 }
-class UserInfoModel implements IUserInfo {
-    userId: number;
+export class UserInfoModel implements IUserInfo {
+    userId?: number;
     userName: string;
     userEmail: string;
     userPassword: string;
@@ -258,6 +258,8 @@ class UserInfoModel implements IUserInfo {
         this.userPhoneNumber = input.user_phone_number
     }
 }
+
+// export const Interface
 
 interface IProfileResponse {
     user_info: IUserInfoResponse,

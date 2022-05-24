@@ -1,6 +1,7 @@
 import * as api from "../api/index";
 import { addToCart } from "../components/product/productDetail";
-import { inValidEmail, emptyField, togglePassword } from "../utilities/validation";
+import { inValidEmail, emptyField } from "../utilities/validation";
+import { togglePassword } from "../utilities/generalFunction";
 import { error } from "../utilities/globalVariables";
 import { ProfileModel } from "../models/types";
 import { getUrlParam } from "../utilities/generalFunction";

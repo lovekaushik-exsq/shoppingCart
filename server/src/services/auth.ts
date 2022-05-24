@@ -36,6 +36,17 @@ export const registerService = async (inputUserDetail: UserInfoModel): Promise<R
     return { user_info, token };
 }
 
+export const getUserByEmailService = async (user_email: string) => {
+    let user = await userQueries.getUserByEmail(user_email);
+    return user;
+}
+
+export const updateUSerByEmailService = async (user: UserModel) => {
+    console.log(user);
+    await userQueries.updateUserByEmail(user);
+    return await getUserByEmailService(user.user_email!);
+}
+
 const addAddressForUser = async (inputUserDetail: UserInfoModel) => {
     let addressId = ((await userQueries.getAddressId(inputUserDetail))).address_id;
     if (!addressId) {

@@ -1,4 +1,7 @@
 import * as constant from "../constants/constants";
+import * as api from "../api/index";
+import * as messages from "../constants/constants";
+import { UserInfoModel } from "../models/types";
 export const inValidEmail = (email: string, error: string[]) => {
     let valid: boolean = true;
     if (constant.regexToTestEmail.test(email)) {
@@ -30,10 +33,6 @@ export const validPhoneNumber = (phone: string, error: string[]): boolean => {
     return valid;
 }
 
-const isNumber = (str: string): boolean => {
-    return !Number.isNaN(Number(str));
-}
-
 export const passwordValidate = (password: string, confirmPassword: string, error: string[]): boolean => {
     let goodPassword = true;
     if (password.length < 8) {
@@ -47,14 +46,17 @@ export const passwordValidate = (password: string, confirmPassword: string, erro
     return !goodPassword;
 }
 
-export const togglePassword = () => {
-    document.querySelectorAll('.pass').forEach((toggle: Element) => {
-        toggle.querySelector('.togglePassword')!.addEventListener('click', (e: Event) => {
-            e.preventDefault();
-            const visibility = toggle!.querySelector('input');
-            const type = visibility!.getAttribute("type") === "password" ? "text" : "password";
-            visibility!.setAttribute("type", type);
-            toggle.querySelector('#icon')?.classList.toggle("bi-eye");
-        })
-    })
+export const oldPasswordIsCorrect = async (user: any, error: string[]) => {
+    const existingUser = new UserInfoModel((await api.getUserByEmail(user.userEmail)).data);
+    const oldPassword = existingUser.userPassword;
+    if (user.oldPassword != oldPassword) {
+        error.push(messages.incorrectPassword);
+    }
+    return oldPassword;
+}
+
+export const notSameToOldPassword = (password: string, newPassword: string, error: string[]) => {
+    if (password == newPassword) {
+        error.push(messages.sameToOldPass);
+    }
 }

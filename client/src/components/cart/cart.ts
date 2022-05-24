@@ -81,7 +81,7 @@ const increaseItem = (item: Element, product: CartModel) => {
         //update the cart
         item.querySelector('#quantity')!.innerHTML = (currentQuantity + 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity + 1)).toString();
-        const userId = profile.userInfo.userId;
+        const userId = profile.userInfo.userId!;
         const productName = product.productName;
         const productColor = product.productColor;
         const productSize = product.productSize;
@@ -99,7 +99,7 @@ const decreaseItem = (item: HTMLElement, product: CartModel) => {
         if (currentQuantity == 1) {
             item.style.display = 'none';
         }
-        const userId = profile.userInfo.userId;
+        const userId = profile.userInfo.userId!;
         const productName = product.productName;
         const productColor = product.productColor;
         const productSize = product.productSize;
