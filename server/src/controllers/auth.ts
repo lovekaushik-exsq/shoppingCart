@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { loginService, registerService } from "../services/auth";
-import { LoginDetailModel, Result, UserInfoModel } from "../models/types";
+import { getUserByEmailService, loginService, registerService, updateUSerByEmailService } from "../services/auth";
+import { LoginDetailModel, Result, UserInfoModel, UserModel } from "../models/types";
 
 //Login
 export const login = async (req: Request, res: Response) => {
@@ -13,5 +13,17 @@ export const login = async (req: Request, res: Response) => {
 export const register = async (req: Request, res: Response) => {
     const input = new UserInfoModel(req.body);
     const data: Result = await registerService(input);
+    return res.send(data);
+}
+
+export const getUserByEmail = async (req: Request, res: Response) => {
+    const user_email = req.query.userEmail as string;
+    const data: UserModel = await getUserByEmailService(user_email);
+    return res.send(data);
+}
+
+export const updateUserByEmail = async (req: Request, res: Response) => {
+    const user = new UserModel(req.body);
+    const data: UserModel = await updateUSerByEmailService(user);
     return res.send(data);
 }

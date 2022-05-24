@@ -13,3 +13,15 @@ export const makeArray = (data: any, className: any) => {
     })
     return output;
 }
+
+export const togglePassword = () => {
+    document.querySelectorAll('.pass').forEach((toggle: Element) => {
+        toggle.querySelector('.togglePassword')!.addEventListener('click', (e: Event) => {
+            e.preventDefault();
+            const visibility = toggle!.querySelector('input');
+            const type = visibility!.getAttribute("type") === "password" ? "text" : "password";
+            visibility!.setAttribute("type", type);
+            toggle.querySelector('#icon')?.classList.toggle("bi-eye");
+        })
+    })
+}

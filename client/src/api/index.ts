@@ -1,11 +1,12 @@
-import { IUserRegistration, ProductTypeModel } from "../models/types";
+import { IUserInfo, IUserRegistration, ProductTypeModel } from "../models/types";
 const axios = require('axios');
 const API = axios.create({ baseURL: "http://localhost:5000" });
 
 
 
 export const login = (params: { userEmail: string, userPassword: string }) => API.post('/auth/login', params);
-
+export const getUserByEmail = (userEmail: string) => API.get('/auth/getUserByEmail', { params: { userEmail } });
+export const updateUser = (user: IUserInfo) => API.post('/auth/updateUser', user);
 export const getAllCountries = () => API.get('/address/getAllCountries');
 export const getStatesFor = (countryId: number) => API.get('/address/getStatesFor', { params: { countryId } });
 export const getCitiesFor = (stateId: number) => API.get('/address/getCitiesFor', { params: { stateId } });

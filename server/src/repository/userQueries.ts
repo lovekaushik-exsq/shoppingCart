@@ -16,6 +16,13 @@ export const getUserByEmail = async (user_email: string): Promise<UserModel> => 
     return user[0];
 }
 
+//Update user
+export const updateUserByEmail = async (user: UserModel) => {
+    sql = `UPDATE user_info SET user_name='${user.user_name}', user_password='${user.user_password}', user_phone_number=${user.user_phone_number} WHERE (user_email='${user.user_email}')`;
+    // sql = `UPDATE user_info SET user_name={user.user_name}, user_password={user.user_password}, user_phone_number=12345678 WHERE (user_email=${user.user_email})`;
+    await runQuery(sql) as UserModel[];
+}
+
 // Add user to db
 export const addUser = async (user: UserModel) => {
     sql = `INSERT INTO user_info (user_name, user_email, user_password, user_phone_number) VALUES ('${user.user_name}', '${user.user_email}', '${user.user_password}', '${user.user_phone_number}')`;

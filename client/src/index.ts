@@ -5,7 +5,7 @@ import { loadProductDetail } from "./components/product/productDetail";
 import { search } from "./components/home/searchProduct";
 import { openFilter } from "./components/home/filter";
 import { loadCart, openCart, placeOrder } from "./components/cart/cart";
-import { profile } from "./components/home/profile";
+import { editProfile, loadEditProfile, profile } from "./components/home/profile";
 import { loadOrders, openOrders } from "./components/cart/order";
 
 //Disable Enter key
@@ -51,16 +51,24 @@ if (productDetailPage != null) {
 }
 
 //Profile
-if (localStorage.getItem('profile')) {
+if (localStorage.getItem('profile') && document.getElementById('profile')) {
     const user = localStorage.getItem('profile')!;
     const nameChar = JSON.parse(user).userInfo.userName.charAt(0);
-    document.getElementById('profile')!.innerHTML = nameChar;
+    document.getElementById('profile')!.innerHTML = nameChar.toUpperCase();
 }
 document.getElementById('profile')?.addEventListener('click', (e: Event) => {
     e.preventDefault();
     profile();
 })
+if (document.getElementById('profileUpdatePage')) {
+    loadEditProfile();
+}
+document.getElementById('submitUpdate')?.addEventListener('click', async (e: Event) => {
+    e.preventDefault();
+    await editProfile();
+})
 
+//Search
 document.getElementById('searchBtn')?.addEventListener('click', (e: Event) => {
     e.preventDefault();
     search();
