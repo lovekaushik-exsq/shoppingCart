@@ -1,7 +1,7 @@
 import * as api from "../../api/index";
 import { getTextOfDropDown, showCountry } from "../../auth/register";
 import { AddressModel, CartModel, IItem, ProfileModel, IUserType } from "../../models/types";
-import { makeArray } from "../../utilities/generalFunction";
+import { makeArray, unAuthorized } from "../../utilities/generalFunction";
 
 
 const profile: ProfileModel = JSON.parse(localStorage.getItem('profile')!);
@@ -17,7 +17,11 @@ export const openCart = () => {
 }
 
 export const loadCart = async (cart: HTMLElement) => {
-    const data: CartModel[] = makeArray((await api.getCart(user.userEmail)).data, CartModel);
+    const cartValue = (await api.getCart(user.userEmail)).data;
+    if (typeof cartValue === 'string') {
+        return unAuthorized(cartValue);
+    }
+    const data: CartModel[] = makeArray(cartValue, CartModel);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
         return;
@@ -60,17 +64,17 @@ const showCart = (data: CartModel[]) => {
 
 }
 
+
 const addFunctionalityToCarts = async (data: CartModel[]) => {
-    const products = makeArray((await api.getCart(user.userEmail)).data, CartModel);
     document.querySelectorAll('.item').forEach(async (item: Element, i: number) => {
-        const product: CartModel = products[i];
-        increaseItem(item, product);
-        decreaseItem(item as HTMLElement, product);
+        increaseItem(item, i);
+        decreaseItem(item as HTMLElement, i);
     })
 }
 
-const increaseItem = (item: Element, product: CartModel) => {
+const increaseItem = (item: Element, idx: number) => {
     item.querySelector('#increase')?.addEventListener('click', async () => {
+        const product: CartModel = makeArray((await api.getCart(user.userEmail)).data, CartModel)[idx];
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
         let totalQuantity = await getQuantity(item);
@@ -87,13 +91,13 @@ const increaseItem = (item: Element, product: CartModel) => {
         const productSize = product.productSize;
         let quantity = product.quantity + 1;
         await api.updateCart({ userId, productName, productColor, productSize, quantity });
-        await productUpdate(productName, productColor, productSize, 1);
         return;
     })
 }
 
-const decreaseItem = (item: HTMLElement, product: CartModel) => {
+const decreaseItem = (item: HTMLElement, idx: number) => {
     item.querySelector('#decrease')?.addEventListener('click', async () => {
+        const product: CartModel = makeArray((await api.getCart(user.userEmail)).data, CartModel)[idx];
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
         if (currentQuantity == 1) {
@@ -107,19 +111,8 @@ const decreaseItem = (item: HTMLElement, product: CartModel) => {
         item.querySelector('#quantity')!.innerHTML = (currentQuantity - 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity - 1)).toString();
         await api.updateCart({ userId, productName, productColor, productSize, quantity });
-        await productUpdate(productName, productColor, productSize, -1);
         return;
     })
-}
-
-const productUpdate = async (name: string, color: string, size: string, quantity: number) => {
-    const param = {
-        name,
-        color,
-        size,
-        quantity
-    }
-    await api.updateProduct(param);
 }
 
 const getQuantity = async (item: Element) => {
@@ -255,6 +248,9 @@ const getNewAddressId = async () => {
     if (!checkAddressValidation(data)) {
         return 0;
     }
-    const id = Number((await api.addNewAddress(data)).data);
+    const id = (await api.addNewAddress(data)).data;
+    if (typeof id === 'string') {
+        return unAuthorized(id);
+    }
     return id;
 }

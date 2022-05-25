@@ -43,7 +43,7 @@ const submitLogin = async (params: { userEmail: string, userPassword: string }) 
         const itemId = Number(getUrlParam('item-id'));
         const variantId = Number(getUrlParam('variant-id'));
         const result = await api.getProductById(itemId);
-        addToCart(result.data, result.data.variants[variantId]);
+        await addToCart(result.data, result.data.variants[variantId]);
     }
     return window.history.go(-1);
 }

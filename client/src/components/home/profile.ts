@@ -1,5 +1,5 @@
 import { notSameToOldPassword, oldPasswordIsCorrect, passwordValidate, validPhoneNumber } from "../../utilities/validation";
-import { togglePassword } from "../../utilities/generalFunction";
+import { togglePassword, unAuthorized } from "../../utilities/generalFunction";
 import { error } from "../../utilities/globalVariables";
 import { emptyField } from "../../utilities/validation";
 import { IUserInfo } from "../../models/types";
@@ -88,6 +88,10 @@ export const editProfile = async () => {
         return;
     }
     const updatedProfile = await api.updateUser(updatedUser);
+
+    if (typeof updatedProfile.data === 'string') {
+        return unAuthorized(updatedProfile.data);
+    }
     localStorage.clear();
     window.location.href = 'index.html';
 

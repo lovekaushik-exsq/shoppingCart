@@ -189,7 +189,7 @@ export class CityModel implements ICity {
 export type Result = {
     user_info: UserModel,
     token: string,
-} | string;
+};
 
 interface IProductVariantRequest {
     size: string,

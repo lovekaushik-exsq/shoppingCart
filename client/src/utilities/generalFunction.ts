@@ -25,3 +25,9 @@ export const togglePassword = () => {
         })
     })
 }
+
+
+export const unAuthorized = (msg: string) => {
+    alert(msg);
+    return window.history.go(-1);
+}

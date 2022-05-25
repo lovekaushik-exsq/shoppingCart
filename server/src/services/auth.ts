@@ -2,23 +2,23 @@ import * as userQueries from "../repository/userQueries";
 import * as messages from "../constants/messages"
 import dotenv from "dotenv";
 import { UserInfoModel, Result, LoginDetailModel, UserModel } from "../models/types";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 dotenv.config();
 
-export const loginService = async (inputUserDetail: LoginDetailModel): Promise<Result> => {
+export const loginService = async (inputUserDetail: LoginDetailModel): Promise<Result | string> => {
     const user_info: UserModel = await userQueries.getUserByEmail(inputUserDetail.user_email);
     if (!user_info || user_info.user_password != inputUserDetail.user_password) {
         return messages.failedAuth;
     }
-    const user_token = { email: user_info.user_email };
-    const token: string = jwt.sign(user_token, process.env.secret, { expiresIn: process.env.tokenExpiration });
+    const user_token = { email: user_info.user_email, id: user_info.user_id };
+    const token: string = jwt.sign(user_token, process.env.secret!, { expiresIn: process.env.tokenExpiration });
     if (!token) {
         return messages.tokenFail;
     }
     return { user_info, token };
 }
 
-export const registerService = async (inputUserDetail: UserInfoModel): Promise<Result> => {
+export const registerService = async (inputUserDetail: UserInfoModel): Promise<Result | string> => {
     const existingUser: UserModel = await (userQueries.getUserByEmail(inputUserDetail.user_email));
     if (existingUser) {
         return messages.duplicateUser;
@@ -28,8 +28,8 @@ export const registerService = async (inputUserDetail: UserInfoModel): Promise<R
         addAddressForUser(inputUserDetail);
     }
     const user_info: UserModel = await (userQueries.getUserByEmail(inputUserDetail.user_email));
-    const user_token = { email: user_info.user_email };
-    const token: string = jwt.sign(user_token, process.env.secret, { expiresIn: process.env.tokenExpiration });
+    const user_token = { email: user_info.user_email, id: user_info.user_id };
+    const token: string = jwt.sign(user_token, process.env.secret!, { expiresIn: process.env.tokenExpiration });
     if (!token) {
         return messages.tokenFail;
     }
@@ -37,12 +37,14 @@ export const registerService = async (inputUserDetail: UserInfoModel): Promise<R
 }
 
 export const getUserByEmailService = async (user_email: string) => {
-    let user = await userQueries.getUserByEmail(user_email);
+    let user: UserModel | string = await userQueries.getUserByEmail(user_email);
     return user;
 }
 
-export const updateUSerByEmailService = async (user: UserModel) => {
-    console.log(user);
+export const updateUserByEmailService = async (user: UserModel) => {
+    if (user.user_email === null || user.user_id === null) {
+        return messages.notAuthenticated;
+    }
     await userQueries.updateUserByEmail(user);
     return await getUserByEmailService(user.user_email!);
 }

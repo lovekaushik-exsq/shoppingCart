@@ -1,5 +1,5 @@
 import * as api from "../../api/index";
-import { getUrlParam } from "../../utilities/generalFunction";
+import { getUrlParam, unAuthorized } from "../../utilities/generalFunction";
 import * as messages from "../../constants/constants"
 import { CartModel, IItem, ProductTypeModel, ProductVariantModel } from "../../models/types";
 import { makeArray } from "../../utilities/generalFunction";
@@ -85,7 +85,11 @@ const loggedIn = () => {
 export const addToCart = async (product: ProductTypeModel, variant: ProductVariantModel) => {
     const profile = JSON.parse(localStorage.getItem('profile')!);
     const user = profile.userInfo;
-    const cart = makeArray((await api.getCart(user.userEmail)).data, CartModel);
+    const cartValue = (await api.getCart(user.userEmail)).data;
+    if (typeof cartValue === 'string') {
+        return unAuthorized(cartValue);
+    }
+    const cart: CartModel[] = makeArray(cartValue, CartModel);
     const data = {
         userId: user.userId,
         productName: product.title,
@@ -97,14 +101,14 @@ export const addToCart = async (product: ProductTypeModel, variant: ProductVaria
         alert(messages.productFinished)
         return;
     }
-    await api.addProductToCart(data);
+    const productAdded = (await api.addProductToCart(data)).data;
     const param = {
         name: product.title,
         color: variant.color,
         size: variant.size,
         quantity: 1
     }
-    await api.updateProduct(param);
+    const productUpdated = (await api.updateProduct(param)).data;
     alert(`${product.title} added to cart.`)
 }
 
