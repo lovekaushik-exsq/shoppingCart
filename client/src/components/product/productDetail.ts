@@ -89,7 +89,6 @@ export const addToCart = async (product: ProductTypeModel, variant: ProductVaria
     if (typeof cartValue === 'string') {
         return unAuthorized(cartValue);
     }
-    console.log("authorized");
     const cart: CartModel[] = makeArray(cartValue, CartModel);
     const data = {
         userId: user.userId,

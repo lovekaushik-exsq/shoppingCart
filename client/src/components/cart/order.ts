@@ -14,7 +14,7 @@ export const openOrders = () => {
 }
 
 export const loadOrders = async () => {
-    const cartValue = (await api.getCart(user.userEmail)).data;
+    const cartValue = (await api.getOrders(user.userEmail)).data;
     if (typeof cartValue === 'string') {
         return unAuthorized(cartValue);
     }

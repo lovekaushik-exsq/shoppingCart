@@ -34,12 +34,8 @@ export const updateCartService = async (product: CartModel) => {
         await cartQueries.deleteFromCart(product);
         return;
     }
-    const addedProduct = await cartQueries.getProduct(product);
-    console.log(addedProduct.quantity);
     await cartQueries.updateCart(product);
-    console.log(addedProduct.quantity);
     const updatedProduct = await cartQueries.getProduct(product);
-    console.log(addedProduct.quantity);
     return updatedProduct;
 }
 
