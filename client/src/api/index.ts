@@ -1,8 +1,16 @@
+import { AxiosRequestConfig } from "../../node_modules/axios/index";
 import { IUserInfo, IUserRegistration, ProductTypeModel } from "../models/types";
 const axios = require('axios');
 const API = axios.create({ baseURL: "http://localhost:5000" });
 
+API.interceptors.request.use((req: AxiosRequestConfig) => {
+    if (localStorage.getItem("profile")) {
+        req.headers!.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")!).token
+            }`;
+    }
 
+    return req;
+});
 
 export const login = (params: { userEmail: string, userPassword: string }) => API.post('/auth/login', params);
 export const getUserByEmail = (userEmail: string) => API.get('/auth/getUserByEmail', { params: { userEmail } });

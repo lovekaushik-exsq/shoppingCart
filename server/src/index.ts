@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
+
 app.get("/", (req, res) => {
     console.log("index is working");
     res.send("/ is getting")

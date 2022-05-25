@@ -118,17 +118,17 @@ export const setProductsOnScreenService = (data: ProductTypeModel[]) => {
 }
 
 export const updateProductService = async (name: string, color: string, size: string, quantity: number) => {
-    const id = getProductId(name);
-    if (id == -1) {
-        return;
-    }
-    const variant_id = getVariantId(id, color, size);
-    var products = JSON.parse(fs.readFileSync(`${__dirname}/../repository/try.json`).toString());
-    products[id].variants[variant_id].available_units -= quantity;
-    if (products[id].variants[variant_id].available_units == 0) {
-        products[id].variants = products[id].variants.filter((item: ProductVariantModel) => item.available_units != 0);
-    }
-    fs.writeFileSync(`${__dirname}/../repository/try.json`, JSON.stringify(products));
+    // const id = getProductId(name);
+    // if (id == -1) {
+    //     return;
+    // }
+    // const variant_id = getVariantId(id, color, size);
+    // var products = JSON.parse(fs.readFileSync(`${__dirname}/../repository/try.json`).toString());
+    // products[id].variants[variant_id].available_units -= quantity;
+    // if (products[id].variants[variant_id].available_units == 0) {
+    //     products[id].variants = products[id].variants.filter((item: ProductVariantModel) => item.available_units != 0);
+    // }
+    // fs.writeFileSync(`${__dirname}/../repository/try.json`, JSON.stringify(products));
 }
 
 const getProductId = (name: string) => {
