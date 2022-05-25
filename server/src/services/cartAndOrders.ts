@@ -3,7 +3,7 @@ import { getUserByEmail } from "../repository/userQueries";
 import { CartModel, OrderModel, UserModel } from "../models/types";
 
 export const getCartForUserService = async (user_email: string) => {
-    const user: UserModel = await getUserByEmail(user_email);
+    const user: UserModel = await getUserByEmail(user_email!);
     let cart = await cartQueries.getCartDataForUser(user.user_id!);
     return cart;
 }
@@ -34,8 +34,12 @@ export const updateCartService = async (product: CartModel) => {
         await cartQueries.deleteFromCart(product);
         return;
     }
+    const addedProduct = await cartQueries.getProduct(product);
+    console.log(addedProduct.quantity);
     await cartQueries.updateCart(product);
+    console.log(addedProduct.quantity);
     const updatedProduct = await cartQueries.getProduct(product);
+    console.log(addedProduct.quantity);
     return updatedProduct;
 }
 

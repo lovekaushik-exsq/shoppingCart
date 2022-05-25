@@ -19,7 +19,6 @@ export const getUserByEmail = async (user_email: string): Promise<UserModel> => 
 //Update user
 export const updateUserByEmail = async (user: UserModel) => {
     sql = `UPDATE user_info SET user_name='${user.user_name}', user_password='${user.user_password}', user_phone_number=${user.user_phone_number} WHERE (user_email='${user.user_email}')`;
-    // sql = `UPDATE user_info SET user_name={user.user_name}, user_password={user.user_password}, user_phone_number=12345678 WHERE (user_email=${user.user_email})`;
     await runQuery(sql) as UserModel[];
 }
 

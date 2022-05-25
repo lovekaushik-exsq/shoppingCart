@@ -12,6 +12,9 @@ export const getAllAddressOfUserService = async (user_email: string) => {
 }
 
 export const addNewAddressService = async (input: AddressModel) => {
+    if (input.user_email === null) {
+        return messages.notAuthenticated;
+    }
     let addressId = (await userQueries.addNewAddress(input)).address_id;
     let userId = (await userQueries.getUserByEmail(input.user_email!)).user_id!;
     await userQueries.mapAddress(userId, addressId as number);

@@ -23,7 +23,7 @@ export const addToCart = async (product: CartModel) => {
 //Update cart
 export const updateCart = async (product: CartModel) => {
     sql = `UPDATE to_buy SET quantity=${product.quantity} WHERE (user_id=${product.user_id} && product_name = '${product.product_name}' && product_color='${product.product_color}' && product_size='${product.product_size}' && order_date IS NULL)`;
-    await runQuery(sql);
+    return await runQuery(sql);
 }
 
 //delete from cart

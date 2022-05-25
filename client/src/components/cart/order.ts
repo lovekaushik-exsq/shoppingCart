@@ -1,5 +1,5 @@
 import { CartModel, IItem, ProfileModel, IUserType } from "../../models/types";
-import { makeArray } from "../../utilities/generalFunction";
+import { makeArray, unAuthorized } from "../../utilities/generalFunction";
 import * as api from "../../api/index";
 import { showProducts } from "../product/products";
 
@@ -14,8 +14,11 @@ export const openOrders = () => {
 }
 
 export const loadOrders = async () => {
-    const data: CartModel[] = makeArray((await api.getOrders(user.userEmail)).data, CartModel);
-    console.log(data);
+    const cartValue = (await api.getCart(user.userEmail)).data;
+    if (typeof cartValue === 'string') {
+        return unAuthorized(cartValue);
+    }
+    const data: CartModel[] = makeArray(cartValue, CartModel);
     showOrders(data);
 }
 
