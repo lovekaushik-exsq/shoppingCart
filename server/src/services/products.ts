@@ -3,9 +3,7 @@ import { ProductVariantModel, ProductTypeModel } from "../models/types";
 const fs = require('fs');
 
 let productsOnScreen: ProductTypeModel[];
-export const getAllProducts = () => {
-    return products;
-}
+export const getAllProducts = () => products;
 export const getAllProductsByService = (type: string) => {
     let output: ProductTypeModel[] = [];
     for (let i = 0; i < products.length; i++) {
@@ -17,9 +15,7 @@ export const getAllProductsByService = (type: string) => {
     return output;
 }
 
-export const getProductByIdService = (id: number) => {
-    return products[id];
-}
+export const getProductByIdService = (id: number) => products[id];
 
 export const searchProductByService = (search: string, data: ProductTypeModel[]) => {
     let mySet = new Set();

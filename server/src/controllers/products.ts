@@ -3,9 +3,8 @@ import products from "../products";
 import { ProductTypeModel } from "../models/types";
 import { filterTheProductsService, getAllFilterOfProductsService, getAllProductsByService, getProductByIdService, getProductsOnScreenService, getQuantityOfProductsService, searchProductByService, setProductsOnScreenService, updateProductService } from "../services/products";
 import { makeArray } from "../utilities/modal";
-export const getAllProducts = (req: Request, res: Response) => {
-    return res.send(products);
-}
+export const getAllProducts = (req: Request, res: Response) => res.send(products);
+
 export const getAllProductsBy = (req: Request, res: Response) => {
     const type = req.query.type as string;
     const data = getAllProductsByService(type);

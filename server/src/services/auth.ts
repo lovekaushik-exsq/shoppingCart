@@ -5,7 +5,7 @@ import { UserInfoModel, Result, LoginDetailModel, UserModel } from "../models/ty
 import jwt from "jsonwebtoken";
 dotenv.config();
 
-export const loginService = async (inputUserDetail: LoginDetailModel): Promise<Result | string> => {
+export const loginService = async (inputUserDetail: LoginDetailModel) => {
     const user_info: UserModel = await userQueries.getUserByEmail(inputUserDetail.user_email);
     if (!user_info || user_info.user_password != inputUserDetail.user_password) {
         return messages.failedAuth;
@@ -18,7 +18,7 @@ export const loginService = async (inputUserDetail: LoginDetailModel): Promise<R
     return { user_info, token };
 }
 
-export const registerService = async (inputUserDetail: UserInfoModel): Promise<Result | string> => {
+export const registerService = async (inputUserDetail: UserInfoModel) => {
     const existingUser: UserModel = await (userQueries.getUserByEmail(inputUserDetail.user_email));
     if (existingUser) {
         return messages.duplicateUser;

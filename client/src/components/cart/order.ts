@@ -1,7 +1,6 @@
 import { CartModel, IItem, ProfileModel, IUserType } from "../../models/types";
 import { makeArray, unAuthorized } from "../../utilities/generalFunction";
 import * as api from "../../api/index";
-import { showProducts } from "../product/products";
 
 const profile: ProfileModel = JSON.parse(localStorage.getItem('profile')!);
 let user: IUserType;

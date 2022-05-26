@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from 'express';
+import * as messages from "../constants/messages";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,7 +15,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
             decodedData = jwt.verify(token, process.env.secret!);
             populate((<JwtPayload>decodedData)?.id, (<JwtPayload>decodedData)?.email, req);
         } else {
-            populate(null, null, req);
+            return res.send(messages.notAuthenticated);
         }
 
         next();
@@ -23,7 +24,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const populate = (id: number | null, email: string | null, req: Request) => {
+const populate = (id: number, email: string, req: Request) => {
     if (req.body.userId) {
         req.body.userId = id;
     }

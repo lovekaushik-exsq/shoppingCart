@@ -3,7 +3,6 @@ import { addToCart } from "../components/product/productDetail";
 import { getUrlParam } from "../utilities/generalFunction";
 import { CityModel, CountryModel, ProfileModel, StateModel, IUserRegistration } from "../models/types";
 import { makeArray } from "../utilities/generalFunction";
-import { error } from "../utilities/globalVariables";
 import { emptyField, passwordValidate, inValidEmail, validPhoneNumber } from "../utilities/validation";
 import { togglePassword } from "../utilities/generalFunction";
 
@@ -15,6 +14,7 @@ export const loadRegister = () => {
     }
     showCountry();
 }
+const error: string[] = [];
 export const validateRegister = (e: Event) => {
     const userName = (<HTMLInputElement>document.getElementById("user_name")).value;
     const userEmail = (<HTMLInputElement>document.getElementById("email")).value;

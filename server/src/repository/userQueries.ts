@@ -1,30 +1,29 @@
 import { UserModel, AddressModel, CityModel, StateModel, CountryModel } from "../models/types";
 import { runQuery } from "./queries";
 
-let sql = "";
 //Get all users
 export const getAllUsers = async (): Promise<UserModel[]> => {
-    sql = `SELECT * FROM user_info`;
+    const sql = `SELECT * FROM user_info`;
     const users = (await runQuery(sql)) as UserModel[];
     return users;
 }
 
 //Get a user by email
 export const getUserByEmail = async (user_email: string): Promise<UserModel> => {
-    sql = `SELECT * FROM user_info WHERE(user_info.user_email = '${user_email}')`;
+    const sql = `SELECT * FROM user_info WHERE(user_info.user_email = '${user_email}')`;
     const user = await runQuery(sql) as UserModel[];
     return user[0];
 }
 
 //Update user
 export const updateUserByEmail = async (user: UserModel) => {
-    sql = `UPDATE user_info SET user_name='${user.user_name}', user_password='${user.user_password}', user_phone_number=${user.user_phone_number} WHERE (user_email='${user.user_email}')`;
+    const sql = `UPDATE user_info SET user_name='${user.user_name}', user_password='${user.user_password}', user_phone_number=${user.user_phone_number} WHERE (user_email='${user.user_email}')`;
     await runQuery(sql) as UserModel[];
 }
 
 // Add user to db
 export const addUser = async (user: UserModel) => {
-    sql = `INSERT INTO user_info (user_name, user_email, user_password, user_phone_number) VALUES ('${user.user_name}', '${user.user_email}', '${user.user_password}', '${user.user_phone_number}')`;
+    const sql = `INSERT INTO user_info (user_name, user_email, user_password, user_phone_number) VALUES ('${user.user_name}', '${user.user_email}', '${user.user_password}', '${user.user_phone_number}')`;
     await runQuery(sql) as UserModel[];
 }
 
@@ -37,19 +36,19 @@ export const getAddressId = async (address: AddressModel) => {
 }
 
 export const addNewAddress = async (address: AddressModel) => {
-    sql = `INSERT INTO address (address,city,state,zip_code,country) VALUES ('${address.address}', '${address.city}', '${address.state}', ${address.zip_code}, '${address.country}')`;
+    const sql = `INSERT INTO address (address,city,state,zip_code,country) VALUES ('${address.address}', '${address.city}', '${address.state}', ${address.zip_code}, '${address.country}')`;
     await runQuery(sql) as AddressModel[];
     return await getAddressId(address);
 }
 
 export const mapAddress = async (user_id: number, address_id: number) => {
-    sql = `INSERT INTO user_address VALUES (${user_id}, ${address_id})`;
+    const sql = `INSERT INTO user_address VALUES (${user_id}, ${address_id})`;
     await runQuery(sql);
 }
 
 //Get all address of an user
 export const getAllAddressOfUser = async (user_id: number): Promise<AddressModel[] | string> => {
-    sql = `Select address.address_id, address.address, address.city, address.state, address.zip_code, address.country FROM address JOIN user_address ON (address.address_id = user_address.address_id) WHERE (user_address.user_id = ${user_id})`;
+    const sql = `Select address.address_id, address.address, address.city, address.state, address.zip_code, address.country FROM address JOIN user_address ON (address.address_id = user_address.address_id) WHERE (user_address.user_id = ${user_id})`;
     const allAddress = await runQuery(sql) as AddressModel[];
     return allAddress;
 }

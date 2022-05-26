@@ -1,6 +1,5 @@
 import { notSameToOldPassword, oldPasswordIsCorrect, passwordValidate, validPhoneNumber } from "../../utilities/validation";
 import { togglePassword, unAuthorized } from "../../utilities/generalFunction";
-import { error } from "../../utilities/globalVariables";
 import { emptyField } from "../../utilities/validation";
 import { IUserInfo } from "../../models/types";
 import * as api from "../../api/index"
@@ -81,7 +80,7 @@ export const editProfile = async () => {
         userPassword,
         userPhoneNumber
     };
-
+    const error: string[] = [];
     error.length = 0;
     if (emptyField(fields, error) || (await validationFail(fields, error))) {
         document.getElementById('msg')!.innerHTML = error.join(`\n`);

@@ -1,8 +1,9 @@
 import * as api from "../../api/index";
 import { getUrlParam, unAuthorized } from "../../utilities/generalFunction";
-import * as messages from "../../constants/constants"
+import { ProductsMessages } from "../../constants/constants";
 import { CartModel, IItem, ProductTypeModel, ProductVariantModel } from "../../models/types";
 import { makeArray } from "../../utilities/generalFunction";
+const messages = new ProductsMessages;
 export const loadProductDetail = (productDetailPage: HTMLElement) => {
     const login: HTMLElement = document.getElementById('openLoginBtn')!;
     const profile: HTMLElement = document.getElementById('profile')!;

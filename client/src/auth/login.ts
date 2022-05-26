@@ -2,7 +2,6 @@ import * as api from "../api/index";
 import { addToCart } from "../components/product/productDetail";
 import { inValidEmail, emptyField } from "../utilities/validation";
 import { togglePassword } from "../utilities/generalFunction";
-import { error } from "../utilities/globalVariables";
 import { ProfileModel } from "../models/types";
 import { getUrlParam } from "../utilities/generalFunction";
 
@@ -21,6 +20,7 @@ export const validateLogin = async (e: Event) => {
         userEmail,
         userPassword,
     };
+    const error: string[] = [];
     error.length = 0;
     if (emptyField(params, error) || inValidEmail(userEmail, error)) {
         document.getElementById('msg')!.innerHTML = error.join(",");

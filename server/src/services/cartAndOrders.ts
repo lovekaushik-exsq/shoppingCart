@@ -11,11 +11,7 @@ export const getCartForUserService = async (user_email: string) => {
 export const addProductToCartService = async (values: CartModel) => {
     const { user_id, product_name, product_size, product_color, product_price_per_unit } = values;
     const productUpdate: CartModel = {
-        user_id,
-        product_name,
-        product_size,
-        product_color,
-        product_price_per_unit,
+        ...values,
         quantity: 1
     }
     let productExistInCart = await cartQueries.getProduct(values);
@@ -45,7 +41,7 @@ export const placeOrderService = async (order: OrderModel) => {
 
 
 export const getAllOrdersForUserService = async (user_email: string) => {
-    const user: UserModel = await getUserByEmail(user_email);
+    const user = await getUserByEmail(user_email);
     let orders = await cartQueries.getAllOrdersForUser(user.user_id!);
     return orders;
 }
