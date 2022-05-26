@@ -24,10 +24,13 @@ export const loadCart = async (cart: HTMLElement) => {
     const data: CartModel[] = makeArray(cartValue, CartModel);
     if (data.length == 0) {
         document.getElementById('placeOrder')!.style.display = 'none';
+        document.getElementById('selectAddress')!.style.display = 'none';
         return;
     }
+    if (data.length != 0) {
+        getAddress(user.userEmail);
+    };
     showCart(data);
-    getAddress(user.userEmail);
 }
 
 const showCart = (data: CartModel[]) => {
@@ -51,7 +54,8 @@ const showCart = (data: CartModel[]) => {
             <button class="minus-btn" type = "button" name = "button" id="decrease">
                 <i class="fa fa-minus" aria-hidden="true"></i>
             </button>
-        </div>
+            </div>
+            <button id="delete">Remove</button>
         <div class="price">Rs.<span id="price">${productPricePerUnit}</span> </div>
         <div class="total-price">Rs.<span id="totalPrice">${(productPricePerUnit * quantity!)}</span></div>
     </div>
@@ -69,6 +73,24 @@ const addFunctionalityToCarts = async (data: CartModel[]) => {
     document.querySelectorAll('.item').forEach(async (item: Element, i: number) => {
         increaseItem(item, i);
         decreaseItem(item as HTMLElement, i);
+        deleteItem(item as HTMLElement, i);
+    })
+}
+
+const deleteItem = (item: HTMLElement, idx: number) => {
+    item.querySelector('#delete')?.addEventListener('click', async () => {
+        const product: CartModel = makeArray((await api.getCart(user.userEmail)).data, CartModel)[idx];
+        item.style.display = 'none';
+        const userId = profile.userInfo.userId!;
+        const productName = product.productName;
+        const productColor = product.productColor;
+        const productSize = product.productSize;
+        let quantity = 0;
+        await api.updateCart({ userId, productName, productColor, productSize, quantity });
+        const cartValue = (await api.getCart(user.userEmail)).data;
+        const data: CartModel[] = makeArray(cartValue, CartModel);
+        loadCart(document.getElementById("cart")!);
+        return;
     })
 }
 
@@ -100,9 +122,6 @@ const decreaseItem = (item: HTMLElement, idx: number) => {
         const product: CartModel = makeArray((await api.getCart(user.userEmail)).data, CartModel)[idx];
         let currentQuantity = product.quantity;
         let price = product.productPricePerUnit;
-        if (currentQuantity == 1) {
-            item.style.display = 'none';
-        }
         const userId = profile.userInfo.userId!;
         const productName = product.productName;
         const productColor = product.productColor;
@@ -111,6 +130,14 @@ const decreaseItem = (item: HTMLElement, idx: number) => {
         item.querySelector('#quantity')!.innerHTML = (currentQuantity - 1).toString();
         item.querySelector('#totalPrice')!.innerHTML = (price * (currentQuantity - 1)).toString();
         await api.updateCart({ userId, productName, productColor, productSize, quantity });
+        if (currentQuantity == 1) {
+            item.style.display = 'none';
+            const cartValue = (await api.getCart(user.userEmail)).data;
+            const data: CartModel[] = makeArray(cartValue, CartModel);
+            // deleteItem(item, idx);
+            // showCart(data);
+            loadCart(document.getElementById("cart")!);
+        }
         return;
     })
 }
